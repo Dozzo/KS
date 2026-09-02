@@ -1,0 +1,4 @@
+.DS_Store
+
+# Midlertidige filer fra rendering og testing
+_*.html
