@@ -2,60 +2,61 @@
 <meta name="description" content="Praktisk informasjon til bryllupet ved Bled Castle i Slovenia, 17. juli 2027.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Parisienne&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=WindSong:wght@400;500&display=swap">
 <style>
 /* ---------------------------------------------------------------
-   Paletten er hentet fra den trykte invitasjonen:
-   kremfarget papir, akvarell-eukalyptus, mørk skoggrønn tekst.
+   Paletten er malt ut av panoramabildet: sola på #E4B16D, steinen
+   og skyggene i varm brunoliven, fjellene i dus blågrå #39404B.
+   Verdiene under er de fargene, justert til lesbar kontrast.
    --------------------------------------------------------------- */
 :root{
-  --paper:#ECEAE2;
-  --card:#F5F4EE;
-  --ink:#2C3A2C;
-  --ink-soft:#556150;
-  --sage:#8BA585;
-  --sage-deep:#4E6B4C;
-  --line:#C6D1BF;
-  --leaf-a:#9DB99A;
-  --pending:#96814F;
-  --band:#4E6B4C;
-  --band-ink:#EDF1EA;
-  --band-soft:#CBDAC6;
-  --band-line:#7E9C79;
+  --paper:#F1E8DB;
+  --card:#F8F2E7;
+  --ink:#2B2419;
+  --ink-soft:#5F5344;
+  --accent:#9C6329;
+  --accent-soft:#C08B4B;
+  --line:#DCCDB5;
+  --leaf:#A98A4E;
+  --pending:#5A6B7D;
+  --band:#39404B;
+  --band-ink:#F1E8DB;
+  --band-soft:#C6BFB2;
+  --band-line:#5C6675;
   --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
-  --script:"Parisienne","Snell Roundhand","Apple Chancery",cursive;
+  --script:"WindSong","Snell Roundhand","Apple Chancery",cursive;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --paper:#1A211A;
-    --card:#232B22;
-    --ink:#E2E8DD;
-    --ink-soft:#A8B5A3;
-    --sage:#8BA585;
-    --sage-deep:#A8C4A3;
-    --line:#38452F;
-    --leaf-a:#4A6349;
-    --pending:#C2A96C;
-    --band:#232B22;
-    --band-ink:#E2E8DD;
-    --band-soft:#A8B5A3;
-    --band-line:#4A6349;
+    --paper:#191510;
+    --card:#241E16;
+    --ink:#EFE5D4;
+    --ink-soft:#B2A48F;
+    --accent:#DFAE6E;
+    --accent-soft:#C08B4B;
+    --line:#3B3125;
+    --leaf:#8A6F3E;
+    --pending:#8FA8C0;
+    --band:#232A33;
+    --band-ink:#EFE5D4;
+    --band-soft:#A9A79F;
+    --band-line:#454F5D;
   }
 }
 :root[data-theme="dark"]{
-  --paper:#1A211A;
-  --card:#232B22;
-  --ink:#E2E8DD;
-  --ink-soft:#A8B5A3;
-  --sage:#8BA585;
-  --sage-deep:#A8C4A3;
-  --line:#38452F;
-  --leaf-a:#4A6349;
-  --pending:#C2A96C;
-  --band:#232B22;
-  --band-ink:#E2E8DD;
-  --band-soft:#A8B5A3;
-  --band-line:#4A6349;
+  --paper:#191510;
+  --card:#241E16;
+  --ink:#EFE5D4;
+  --ink-soft:#B2A48F;
+  --accent:#DFAE6E;
+  --accent-soft:#C08B4B;
+  --line:#3B3125;
+  --leaf:#8A6F3E;
+  --pending:#8FA8C0;
+  --band:#232A33;
+  --band-ink:#EFE5D4;
+  --band-soft:#A9A79F;
+  --band-line:#454F5D;
 }
 
 *{box-sizing:border-box}
@@ -72,22 +73,22 @@ body{
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
 }
-a{color:var(--sage-deep)}
-a:focus-visible,summary:focus-visible{outline:2px solid var(--sage);outline-offset:3px}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--accent-soft);outline-offset:3px}
 .wrap{max-width:660px;margin:0 auto;padding:0 26px}
 
 /* ---------- hero ---------- */
 .hero{text-align:center;padding:0 0 50px}
-.leaf-a{fill:var(--leaf-a)}
-.stem{stroke:var(--sage);fill:none}
+.leaf-a{fill:var(--leaf)}
+.stem{stroke:var(--accent-soft);fill:none}
 
 /* Panoramaet toner ned i papirfargen nederst, i begge temaer.
    Gradienten bak bildet er en fallback, sa toppen holder seg hel
    ogsa hvis bildefilen mangler. */
 .panorama{
-  position:relative;margin:0 0 34px;overflow:hidden;
-  height:clamp(230px,44vh,440px);
-  background:linear-gradient(180deg,#46516b 0%,#8d6a52 46%,#d69a58 70%,var(--paper) 100%);
+  position:relative;margin:0 0 30px;overflow:hidden;
+  aspect-ratio:3/2;max-height:46vh;
+  background:linear-gradient(180deg,#39404B 0%,#6B4E4E 44%,#E4B16D 72%,var(--paper) 100%);
 }
 .panorama img{width:100%;height:100%;display:block;object-fit:cover;object-position:58% center}
 .panorama::after{
@@ -95,7 +96,7 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--sage);outline-offs
   background:linear-gradient(to bottom,transparent,var(--paper));
 }
 @media (min-width:780px){
-  .panorama{height:clamp(330px,52vh,540px)}
+  .panorama{aspect-ratio:21/9;max-height:58vh}
   .panorama img{object-position:50% center}
 }
 .eyebrow{
@@ -103,9 +104,9 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--sage);outline-offs
   text-transform:uppercase;color:var(--ink-soft);
 }
 .names{
-  font-family:var(--script);font-weight:400;
-  font-size:clamp(3rem,12.5vw,5rem);line-height:1.06;
-  color:var(--sage-deep);margin:0 0 20px;text-wrap:balance;
+  font-family:var(--script);font-weight:500;
+  font-size:clamp(2.2rem,8.6vw,3.4rem);line-height:1.8;
+  color:var(--accent);margin:0 0 18px;text-wrap:balance;
 }
 .hero-date{
   margin:0 0 16px;font-weight:300;
@@ -116,7 +117,7 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--sage);outline-offs
 .hero-meta b{display:block;font-weight:500;margin-top:5px;color:var(--ink)}
 
 .count{display:flex;justify-content:center;gap:28px;margin:32px 0 0;padding:0;list-style:none}
-.count .n{display:block;font-size:1.85rem;line-height:1;color:var(--sage-deep);font-variant-numeric:tabular-nums}
+.count .n{display:block;font-size:1.85rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
 .count .l{display:block;margin-top:7px;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
 
 /* ---------- nav ---------- */
@@ -134,7 +135,7 @@ nav a{
   display:block;padding:8px 13px;white-space:nowrap;text-decoration:none;
   color:var(--ink-soft);font-size:.68rem;letter-spacing:.19em;text-transform:uppercase;
 }
-nav a:hover{color:var(--sage-deep)}
+nav a:hover{color:var(--accent)}
 @media (min-width:780px){
   nav{position:sticky;top:0;z-index:10}
   nav ul{flex-wrap:nowrap;padding:0}
@@ -145,7 +146,7 @@ nav a:hover{color:var(--sage-deep)}
 section{padding:50px 0 6px}
 h2{
   margin:0 0 6px;text-align:center;font-weight:400;font-size:1.85rem;
-  letter-spacing:.05em;color:var(--sage-deep);text-wrap:balance;
+  letter-spacing:.05em;color:var(--accent);text-wrap:balance;
 }
 .sub{margin:0 0 28px;text-align:center;font-style:italic;font-size:1rem;color:var(--ink-soft)}
 h3{
@@ -163,7 +164,7 @@ p{margin:0 0 16px;color:var(--ink-soft)}
 .tl{list-style:none;margin:0;padding:0}
 .tl li{display:flex;gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}
 .tl li:last-child{border-bottom:0}
-.tl time{flex:0 0 62px;padding-top:3px;font-size:.9rem;letter-spacing:.06em;color:var(--sage-deep);font-variant-numeric:tabular-nums}
+.tl time{flex:0 0 62px;padding-top:3px;font-size:.9rem;letter-spacing:.06em;color:var(--accent);font-variant-numeric:tabular-nums}
 .tl b{display:block;font-weight:600;font-size:1.05rem;color:var(--ink)}
 .tl span{font-size:.95rem;color:var(--ink-soft)}
 .program-block{display:flex;flex-direction:column;gap:4px;margin-bottom:26px}
@@ -182,17 +183,19 @@ p{margin:0 0 16px;color:var(--ink-soft)}
 }
 .rsvp .btn:hover{background:rgba(255,255,255,.1)}
 .rsvp .alt{margin:18px 0 0;font-size:.95rem}
+/* Den blagra markorfargen forsvinner mot det blagra feltet, sa her varm den opp. */
+.rsvp .pending{color:var(--accent-soft)}
 
 /* faq */
 details{border-bottom:1px solid var(--line);padding:14px 0}
 details summary{cursor:pointer;font-size:1.05rem;color:var(--ink);list-style:none}
 details summary::-webkit-details-marker{display:none}
-details summary::after{content:"+";float:right;color:var(--sage);font-size:1.3rem;line-height:1.3}
+details summary::after{content:"+";float:right;color:var(--accent-soft);font-size:1.3rem;line-height:1.3}
 details[open] summary::after{content:"\2013"}
 details p{margin:12px 0 2px}
 
 footer{padding:44px 0 58px;text-align:center;color:var(--ink-soft)}
-footer .sign{margin:4px 0 0;font-family:var(--script);font-size:2rem;color:var(--sage-deep)}
+footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size:1.6rem;line-height:1.5;color:var(--accent)}
 
 /* markerer det dere fortsatt må fylle inn */
 .pending{color:var(--pending);font-style:italic}
