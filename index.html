@@ -22,7 +22,6 @@
   --sage-deep:#4E6B4C;
   --line:#C6D1BF;
   --leaf-a:#9DB99A;
-  --leaf-b:#7D9C7B;
   --pending:#96814F;
   --band:#4E6B4C;
   --band-ink:#EDF1EA;
@@ -41,7 +40,6 @@
     --sage-deep:#A8C4A3;
     --line:#38452F;
     --leaf-a:#4A6349;
-    --leaf-b:#5C7A5A;
     --pending:#C2A96C;
     --band:#232B22;
     --band-ink:#E2E8DD;
@@ -58,7 +56,6 @@
   --sage-deep:#A8C4A3;
   --line:#38452F;
   --leaf-a:#4A6349;
-  --leaf-b:#5C7A5A;
   --pending:#C2A96C;
   --band:#232B22;
   --band-ink:#E2E8DD;
@@ -85,11 +82,27 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--sage);outline-offs
 .wrap{max-width:660px;margin:0 auto;padding:0 26px}
 
 /* ---------- hero ---------- */
-.hero{text-align:center;padding:0 0 50px;overflow:hidden}
-.hero-leaves{display:block;width:100%;height:auto;margin-bottom:-6px}
+.hero{text-align:center;padding:0 0 50px}
 .leaf-a{fill:var(--leaf-a)}
-.leaf-b{fill:var(--leaf-b)}
 .stem{stroke:var(--sage);fill:none}
+
+/* Panoramaet toner ned i papirfargen nederst, i begge temaer.
+   Gradienten bak bildet er en fallback, sa toppen holder seg hel
+   ogsa hvis bildefilen mangler. */
+.panorama{
+  position:relative;margin:0 0 34px;overflow:hidden;
+  height:clamp(230px,44vh,440px);
+  background:linear-gradient(180deg,#46516b 0%,#8d6a52 46%,#d69a58 70%,var(--paper) 100%);
+}
+.panorama img{width:100%;height:100%;display:block;object-fit:cover;object-position:58% center}
+.panorama::after{
+  content:"";position:absolute;inset:auto 0 0 0;height:34%;pointer-events:none;
+  background:linear-gradient(to bottom,transparent,var(--paper));
+}
+@media (min-width:780px){
+  .panorama{height:clamp(330px,52vh,540px)}
+  .panorama img{object-position:50% center}
+}
 .eyebrow{
   margin:0 0 4px;font-size:.76rem;letter-spacing:.34em;
   text-transform:uppercase;color:var(--ink-soft);
@@ -200,26 +213,12 @@ footer .sign{margin:4px 0 0;font-family:var(--script);font-size:2rem;color:var(-
 <body>
 
 <header class="hero">
-  <svg class="hero-leaves" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-    <g class="leaf-a">
-      <path d="M34 6c48 8 86 38 106 80-44 8-88-16-106-80Z"/>
-      <path d="M128 42c46 16 76 52 88 96-46 2-84-30-88-96Z"/>
-      <path d="M232 88c42 20 66 56 72 98-44-2-76-36-72-98Z"/>
-      <path d="M766 6c-48 8-86 38-106 80 44 8 88-16 106-80Z"/>
-      <path d="M672 42c-46 16-76 52-88 96 46 2 84-30 88-96Z"/>
-      <path d="M568 88c-42 20-66 56-72 98 44-2 76-36 72-98Z"/>
-    </g>
-    <g class="leaf-b" opacity=".72">
-      <path d="M92 0c32 24 48 60 48 102-34-16-56-52-48-102Z"/>
-      <path d="M196 28c32 26 46 62 44 104-34-18-52-54-44-104Z"/>
-      <path d="M708 0c-32 24-48 60-48 102 34-16 56-52 48-102Z"/>
-      <path d="M604 28c-32 26-46 62-44 104 34-18 52-54 44-104Z"/>
-    </g>
-    <g class="stem" stroke-width="1.3" opacity=".65">
-      <path d="M14 2C118 34 202 94 254 184"/>
-      <path d="M786 2C682 34 598 94 546 184"/>
-    </g>
-  </svg>
+  <figure class="panorama">
+    <img src="bilder/panorama.jpg"
+         alt="Solnedgang over dalen sett fra murene pa Bled Castle"
+         fetchpriority="high"
+         onerror="this.remove()">
+  </figure>
 
   <div class="wrap">
     <p class="eyebrow">Vi gifter oss</p>
