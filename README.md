@@ -12,8 +12,20 @@ kan holdes kort og all praktisk info kan oppdateres fram mot bryllupet.
 | `index.html` | Kilden, og det som publiseres. Selvstendig fil, ingen byggesteg. |
 | `artifact.html` | Genereres fra `index.html`. Brukes bare til forhåndsvisning. |
 | `build_artifact.py` | Lager `artifact.html`. Kjør etter endringer i `index.html`. |
+| `bilder/` | Bildene som brukes på siden. |
+| `klargjor_bilde.py` | Skalerer og komprimerer et bilde for nett. |
 
 Alt innhold ligger i `index.html`. Rediger den, ikke `artifact.html`.
+
+## Bilder
+
+Legg store bilder gjennom skriptet før de committes, ellers vokser repoet fort:
+
+    python3 klargjor_bilde.py ~/Desktop/bilde.jpg navn
+
+Panoramaet i toppen er 2048 px bredt og 184 kB. Utsnittet på mobil styres av
+`object-position` på `.panorama img`, satt til 58 % for å holde både
+solnedgangen og oss i bildet.
 
 ## Se siden lokalt
 
