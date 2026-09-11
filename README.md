@@ -27,6 +27,16 @@ Panoramaet i toppen er 2048 px bredt og 184 kB. Utsnittet på mobil styres av
 `object-position` på `.panorama img`, satt til 58 % for å holde både
 solnedgangen og oss i bildet.
 
+## Farger
+
+Paletten er sampla ut av `bilder/panorama.jpg`, ikke gjettet: bakgrunnen er
+murens beige, og skriften er solnedgangens rustoransje. Alle verdiene ligger
+som variabler oyerst i `index.html`.
+
+Siden er lys i alle temaer, og folger med vilje ikke morkt systemtema — beigen
+er en del av uttrykket. Hver tekstfarge er malt mot bakgrunnen den faktisk star
+pa og ligger over WCAG AA. Endrer du en farge, mal den pa nytt.
+
 ## Se siden lokalt
 
 Åpne `index.html` direkte i nettleseren, eller start en enkel server:
