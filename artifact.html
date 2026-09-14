@@ -46,13 +46,14 @@
 }
 
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+/* Én grunnstorrelse styrer hele siden: alle font-size under er i rem.
+   Skru her for a gjore all tekst storre eller mindre. */
+html{scroll-behavior:smooth;font-size:20px}
 body{
   margin:0;
   background:var(--paper);
   color:var(--ink);
   font-family:var(--serif);
-  font-size:19px;
   line-height:1.75;
   -webkit-font-smoothing:antialiased;
 }
@@ -81,33 +82,37 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--accent-soft);outli
 }
 .panorama img{width:100%;height:100%;display:block;object-fit:cover;object-position:58% center}
 .panorama::after{
-  content:"";position:absolute;inset:auto 0 0 0;height:34%;pointer-events:none;
+  content:"";position:absolute;inset:auto 0 0 0;height:17%;pointer-events:none;
   background:linear-gradient(to bottom,transparent,var(--paper));
 }
 @media (min-width:780px){
-  .panorama{aspect-ratio:21/9;max-height:58vh}
-  .panorama img{object-position:50% center}
+  /* 21/9 viser 73 % av bildehoyden. Med 18 % vertikal posisjon starter
+     utsnittet 5 % ned fra toppen og slutter pa 78 %: hele sola er med,
+     og bunnen ligger der den la med sentrert utsnitt og 58vh-tak.
+     Taket er hevet til 80vh; nar det slar inn, ryker bunnen for sola. */
+  .panorama{aspect-ratio:21/9;max-height:80vh}
+  .panorama img{object-position:50% 18%}
 }
 .eyebrow{
-  margin:0 0 4px;font-size:.76rem;letter-spacing:.34em;
-  text-transform:uppercase;color:var(--ink-soft);
+  margin:0 0 6px;font-size:1rem;font-weight:500;letter-spacing:.34em;
+  text-transform:uppercase;color:var(--ink);
 }
 .names{
   font-family:var(--script);font-weight:500;
-  font-size:clamp(2.2rem,8.6vw,3.4rem);line-height:1.8;
+  font-size:clamp(1.8rem,8.6vw,2.75rem);line-height:1.8;
   color:var(--accent);margin:0 0 18px;text-wrap:balance;
 }
 .hero-date{
   margin:0 0 16px;font-weight:300;
-  font-size:clamp(1.45rem,6.6vw,2.35rem);letter-spacing:.2em;color:var(--ink);
+  font-size:clamp(1.2rem,6.6vw,1.9rem);letter-spacing:.2em;color:var(--ink);
 }
 .hero-date i{font-style:normal;color:var(--rule);margin:0 .1em}
-.hero-meta{margin:0;font-size:.82rem;letter-spacing:.26em;text-transform:uppercase;color:var(--ink-soft)}
-.hero-meta b{display:block;font-weight:500;margin-top:5px;color:var(--ink)}
+.hero-meta{margin:0;font-size:1.05rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--ink)}
+.hero-meta b{display:block;font-size:1.2rem;font-weight:600;margin-top:8px;color:var(--ink)}
 
 .count{display:flex;justify-content:center;gap:28px;margin:32px 0 0;padding:0;list-style:none}
-.count .n{display:block;font-size:1.85rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
-.count .l{display:block;margin-top:7px;font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
+.count .n{display:block;font-size:1.5rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.count .l{display:block;margin-top:8px;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
 
 /* ---------- nav ---------- */
 /* Menyen brytes over flere linjer i stedet for a scrolle sidelengs.
@@ -122,29 +127,56 @@ nav ul{
 }
 nav a{
   display:block;padding:8px 13px;white-space:nowrap;text-decoration:none;
-  color:var(--ink-soft);font-size:.68rem;letter-spacing:.19em;text-transform:uppercase;
+  color:var(--ink-soft);font-size:.7rem;letter-spacing:.19em;text-transform:uppercase;
 }
 nav a:hover{color:var(--accent)}
-@media (min-width:780px){
+/* Atte punkter pa en linje trenger ca. 800 px. Under det brytes menyen. */
+@media (min-width:840px){
   nav{position:sticky;top:0;z-index:10}
   nav ul{flex-wrap:nowrap;padding:0}
-  nav a{padding:13px 15px;font-size:.7rem}
+  nav a{padding:13px 11px;font-size:.72rem}
 }
 
 /* ---------- seksjoner ---------- */
 section{padding:50px 0 6px}
 h2{
-  margin:0 0 6px;text-align:center;font-weight:400;font-size:1.85rem;
+  margin:0 0 6px;text-align:center;font-weight:400;font-size:1.55rem;
   letter-spacing:.05em;color:var(--accent);text-wrap:balance;
 }
-.sub{margin:0 0 28px;text-align:center;font-style:italic;font-size:1rem;color:var(--ink-soft)}
+.sub{margin:0 0 28px;text-align:center;font-style:italic;font-size:.9rem;color:var(--ink-soft)}
 h3{
-  margin:0 0 6px;font-size:.74rem;letter-spacing:.24em;
+  margin:0 0 6px;font-size:.72rem;letter-spacing:.24em;
   text-transform:uppercase;font-weight:600;color:var(--ink);
 }
 p{margin:0 0 16px;color:var(--ink-soft)}
 
 .stack{display:flex;flex-direction:column;gap:16px}
+
+/* kart og steder */
+.map{
+  margin:0 0 16px;border:1px solid var(--line);background:var(--card);
+  aspect-ratio:4/3;overflow:hidden;
+}
+.map iframe{display:block;width:100%;height:100%;border:0}
+@media (min-width:600px){.map{aspect-ratio:16/10}}
+.place-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px;margin:0 0 6px}
+.place-name{display:block;font-size:1.15rem;font-weight:600;color:var(--ink)}
+.pill{
+  display:inline-block;padding:4px 12px;border-radius:999px;
+  background:rgba(161,71,26,.12);color:var(--accent);
+  font-size:.78rem;font-weight:600;letter-spacing:.04em;white-space:nowrap;
+}
+.addr{display:flex;align-items:flex-start;gap:8px;margin:0 0 12px;font-size:.92rem}
+.addr svg{flex:0 0 auto;width:1em;height:1em;margin-top:.35em;fill:none;stroke:var(--accent-soft);stroke-width:1.6}
+.links{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;margin:0;font-size:.92rem}
+.links a{text-decoration:none;border-bottom:1px solid var(--line)}
+.links a:hover{border-bottom-color:var(--accent)}
+.links .btn-accent{
+  padding:10px 22px;border:1px solid var(--accent);color:var(--accent);
+  font-size:.78rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+}
+.links .btn-accent:hover{background:var(--accent);color:var(--card)}
+.place .pending{margin:14px 0 0;font-size:.92rem}
 .card{background:var(--card);border:1px solid var(--line);padding:23px 25px}
 .card p:last-child{margin-bottom:0}
 
@@ -153,9 +185,9 @@ p{margin:0 0 16px;color:var(--ink-soft)}
 .tl{list-style:none;margin:0;padding:0}
 .tl li{display:flex;gap:20px;padding:14px 0;border-bottom:1px solid var(--line)}
 .tl li:last-child{border-bottom:0}
-.tl time{flex:0 0 62px;padding-top:3px;font-size:.9rem;letter-spacing:.06em;color:var(--accent);font-variant-numeric:tabular-nums}
-.tl b{display:block;font-weight:600;font-size:1.05rem;color:var(--ink)}
-.tl span{font-size:.95rem;color:var(--ink-soft)}
+.tl time{flex:0 0 66px;padding-top:3px;font-size:.8rem;letter-spacing:.06em;color:var(--accent);font-variant-numeric:tabular-nums}
+.tl b{display:block;font-weight:600;font-size:.95rem;color:var(--ink)}
+.tl span{font-size:.88rem;color:var(--ink-soft)}
 .program-block{display:flex;flex-direction:column;gap:4px;margin-bottom:26px}
 
 .divider{display:block;margin:44px auto 0;width:130px;height:auto}
@@ -168,32 +200,32 @@ p{margin:0 0 16px;color:var(--ink-soft)}
 .rsvp .btn{
   display:inline-block;margin-top:4px;padding:13px 34px;
   border:1px solid var(--band-line);color:var(--band-ink);text-decoration:none;
-  font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;
+  font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;
 }
 .rsvp .btn:hover{background:rgba(255,255,255,.1)}
-.rsvp .alt{margin:18px 0 0;font-size:.95rem}
+.rsvp .alt{margin:18px 0 0;font-size:.85rem}
 /* Den blagra markorfargen forsvinner mot det blagra feltet, sa her varm den opp. */
 .rsvp .pending{color:var(--band-accent)}
 
 /* faq */
 details{border-bottom:1px solid var(--line);padding:14px 0}
-details summary{cursor:pointer;font-size:1.05rem;color:var(--ink);list-style:none}
+details summary{cursor:pointer;font-size:.95rem;color:var(--ink);list-style:none}
 details summary::-webkit-details-marker{display:none}
-details summary::after{content:"+";float:right;color:var(--accent-soft);font-size:1.3rem;line-height:1.3}
+details summary::after{content:"+";float:right;color:var(--accent-soft);font-size:1.1rem;line-height:1.3}
 details[open] summary::after{content:"\2013"}
 details p{margin:12px 0 2px}
 
 footer{padding:44px 0 58px;text-align:center;color:var(--ink-soft)}
-footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size:1.6rem;line-height:1.5;color:var(--accent)}
+footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size:1.4rem;line-height:1.5;color:var(--accent)}
 
 /* markerer det dere fortsatt må fylle inn */
 .pending{color:var(--pending);font-style:italic}
 
 @media (max-width:520px){
-  body{font-size:18px}
+  html{font-size:19px}
   .count{gap:18px}
   .tl li{gap:14px}
-  .tl time{flex-basis:56px;font-size:.84rem}
+  .tl time{flex-basis:60px;font-size:.78rem}
 }
 </style>
 
@@ -223,6 +255,7 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
   <ul>
     <li><a href="#program">Program</a></li>
     <li><a href="#reise">Reise</a></li>
+    <li><a href="#kart">Kart</a></li>
     <li><a href="#overnatting">Overnatting</a></li>
     <li><a href="#kleskode">Kleskode</a></li>
     <li><a href="#gaver">Gaver</a></li>
@@ -305,14 +338,53 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
     </div>
   </section>
 
+  <section id="kart">
+    <h2>Hvor</h2>
+    <p class="sub">Begge stedene på ett kart, med gangveien mellom</p>
+    <div class="map">
+      <iframe src="https://www.google.com/maps/embed?pb=!1m6!4m5!3e2!4m1!2sHotel+Astoria+Bled,+Bled,+Slovenia!4m1!2sBled+Castle,+Bled,+Slovenia!3m1!1sno!5m1!1sno"
+              title="Kart over Hotel Astoria Bled og Bled Castle"
+              loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+    </div>
+    <div class="stack">
+      <div class="card place">
+        <h3>Vielse og fest</h3>
+        <b class="place-name">Bled Castle</b>
+        <p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Grajska cesta 61, 4260 Bled, Slovenia</span></p>
+        <p class="links">
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Bled+Castle,+Grajska+cesta+61,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Se på kart</a>
+          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Bled+Castle,+Grajska+cesta+61,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Veibeskrivelse</a>
+        </p>
+      </div>
+      <div class="card place">
+        <h3>Overnatting og bli-kjent-kveld</h3>
+        <b class="place-name">Hotel Astoria Bled</b>
+        <p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Prešernova cesta 44, 4260 Bled, Slovenia</span></p>
+        <p class="links">
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Se på kart</a>
+          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Veibeskrivelse</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
   <section id="overnatting">
     <h2>Overnatting</h2>
     <p class="sub">Vi har ordnet rabatt</p>
     <div class="stack">
-      <div class="card">
-        <h3>Hotel Astoria Bled</h3>
+      <div class="card place">
+        <div class="place-head">
+          <b class="place-name">Hotel Astoria Bled</b>
+          <span class="pill">Rabattert pris for gjestene</span>
+        </div>
         <p>Vi har ordnet rabatt her, og det er ca. 15 minutters spasertur til Bled Castle. Bli-kjent-kvelden er også på hotellet.</p>
-        <p class="pending">Fyll inn: bookinglenke eller rabattkode, og siste frist for å få rabatten.</p>
+        <p>Lenken under er forhåndsutfylt med 16.–18. juli for to personer. Datoer og antall kan endres i bookingen.</p>
+        <p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Prešernova cesta 44, 4260 Bled, Slovenia</span></p>
+        <p class="links">
+          <a class="btn-accent" href="https://booking.profitroom.com/en/hotelastoriabled1/pricelist/offers/1086720/?check-in=2027-07-16&amp;check-out=2027-07-18&amp;currency=EUR&amp;r1_adults=2&amp;no-cache=1" target="_blank" rel="noopener">Book med rabatt</a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Se på kart</a>
+        </p>
+        <p class="pending">Fyll inn: siste frist for å få rabatten.</p>
       </div>
       <div class="card">
         <h3>Andre alternativer</h3>
