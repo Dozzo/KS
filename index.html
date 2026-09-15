@@ -311,9 +311,16 @@ html:not(.apnet){overflow:hidden}
   transform-style:preserve-3d;
   transition:transform .8s cubic-bezier(.45,0,.2,1),z-index 0s .4s;
 }
-.env-klaff img{backface-visibility:hidden}
+/* For- og bakside byttes eksplisitt idet klaffen passerer 90 grader
+   (0.36 s inn i vippingen). backface-visibility alene er ikke til a
+   stole pa i alle nettlesere nar clip-path er i bruk. */
+.env-klaff img{backface-visibility:hidden;-webkit-backface-visibility:hidden}
 .env-klaff-front{clip-path:var(--klaff)}
-.env-klaff-bak{clip-path:var(--trekant-inn);transform:rotateX(180deg)}
+.env-klaff-bak{clip-path:var(--trekant-inn);transform:rotateX(180deg);visibility:hidden}
+.env.apen .env-klaff-front{animation:skjul .01s linear .36s forwards}
+.env.apen .env-klaff-bak{animation:vis .01s linear .36s forwards}
+@keyframes skjul{to{visibility:hidden;opacity:0}}   /* ogsa opacity: noen nettlesere tegner filtrerte lag selv om de er visibility:hidden */
+@keyframes vis{to{visibility:visible}}
 /* Kortet: handlaget papir (tekstur fra konvoluttfotoet, tonet krem)
    med revet kant fra en maske. Tre steg etter at klaffen er oppe:
      1. trekkes rett opp av lommen, bak konvolutten
@@ -361,30 +368,56 @@ html:not(.apnet){overflow:hidden}
 /* Konvolutten trekker seg litt bakover nar kortet kommer frem */
 /* Filter og opacity ma ligge pa bildene, ikke pa .env-klaff: pa 3D-laget
    ville de flate ut rotasjonen og vise forsiden (med segl) gjennom baksiden. */
-.env-kropp,.env-lomme,.env-side-v,.env-side-h,.env-klaff img{transition:filter .6s 1.6s,opacity .6s 1.6s}
-.env.apen .env-kropp,.env.apen .env-side-v,.env.apen .env-side-h,.env.apen .env-klaff img{filter:blur(2px);opacity:.55}
+.env-kropp,.env-lomme,.env-side-v,.env-side-h,.env-klaff-bak{transition:filter .6s 1.6s,opacity .6s 1.6s}
+.env.apen .env-kropp,.env.apen .env-side-v,.env.apen .env-side-h,.env.apen .env-klaff-bak{filter:blur(2px);opacity:.55}
 .env.apen .env-lomme{filter:brightness(.8) blur(2px);opacity:.55}
 @media (prefers-reduced-motion:reduce){
   .konvolutt,.env-klaff,.env-kort,.env-hint,.env-kropp,.env-lomme{transition:none;animation:none}
+  .env.apen .env-klaff-front{visibility:hidden}
+  .env.apen .env-klaff-bak{visibility:visible}
   .env-munn{clip-path:none;z-index:5}
 }
+
+/* ---------- sprak ---------- */
+/* Alt innhold ligger pa begge sprak i HTML-en, merket lang="nb" og
+   lang="en". Klassen pa <html> bestemmer hvilket som vises; den settes
+   i <head> for siden tegnes, sa det ikke blinker. */
+html:not(.en) [lang="en"]{display:none}
+html.en [lang="nb"]{display:none}
+.sprak{
+  border:1px solid var(--line);background:none;cursor:pointer;
+  font:600 .68rem/1 var(--serif);letter-spacing:.2em;padding:8px 10px 7px 12px;
+  color:var(--ink);border-radius:999px;
+}
+.sprak:hover{border-color:var(--accent);color:var(--accent)}
+nav .sprak{margin:5px 0 0 6px}
+@media (min-width:840px){nav .sprak{margin:8px 0 0 10px}}
+.sprak-topp{position:absolute;top:14px;right:16px;z-index:101}
 </style>
 <script>
 /* Konvolutten vises bare forste gang i okten, og ikke nar noen kommer
    rett til et avsnitt via lenke (#kleskode o.l.). Klassen settes for
    siden tegnes, sa den ikke blinker forbi. */
 (function(){try{if(sessionStorage.getItem("apnet")||location.hash){document.documentElement.classList.add("apnet")}}catch(e){}})();
+/* Sprak: norsk er standard; engelsk bare nar gjesten selv har valgt
+   det (huskes i localStorage). */
+(function(){
+  var valgt = null;
+  try{ valgt = localStorage.getItem("sprak"); }catch(e){}
+  if(valgt === "en"){ document.documentElement.classList.add("en"); document.documentElement.lang = "en"; }
+})();
 </script>
 </head>
 <body>
 
 <div class="konvolutt" id="konvolutt">
+  <button class="sprak sprak-topp" type="button" data-sprak><span lang="nb">EN</span><span lang="en">NO</span></button>
   <button class="env" type="button" aria-label="Åpne invitasjonen">
     <img class="env-kropp" src="bilder/konvolutt-uten.jpg" alt="" width="1327" height="805">
     <img class="env-lomme" src="bilder/konvolutt-inn.jpg" alt="" width="1327" height="805">
     <span class="env-munn">
     <span class="env-skygge"></span>
-    <span class="env-kort"><small>Vi gifter oss</small><b>Kristoffer og Synne</b><i>17<em>|</em>07<em>|</em>2027</i><u>Bled Castle · Slovenia</u></span>
+    <span class="env-kort"><small lang="nb">Vi gifter oss</small><small lang="en">We're getting married</small><b>Kristoffer og Synne</b><i>17<em>|</em>07<em>|</em>2027</i><u>Bled Castle · Slovenia</u></span>
     </span>
     <img class="env-side-v" src="bilder/konvolutt-inn.jpg" alt="" width="1327" height="805">
     <img class="env-side-h" src="bilder/konvolutt-inn.jpg" alt="" width="1327" height="805">
@@ -393,7 +426,7 @@ html:not(.apnet){overflow:hidden}
       <img class="env-klaff-bak" src="bilder/konvolutt-inn.jpg" alt="" width="1327" height="805">
     </span>
   </button>
-  <p class="env-hint">Trykk for å åpne</p>
+  <p class="env-hint" lang="nb">Trykk for å åpne</p><p class="env-hint" lang="en">Tap to open</p>
 </div>
 
 <header class="hero">
@@ -406,37 +439,38 @@ html:not(.apnet){overflow:hidden}
   </figure>
 
   <div class="wrap">
-    <p class="eyebrow">Vi gifter oss!</p>
+    <p class="eyebrow" lang="nb">Vi gifter oss!</p><p class="eyebrow" lang="en">We're getting married!</p>
     <h1 class="names">Kristoffer og Synne</h1>
     <p class="hero-date">17<i>|</i>07<i>|</i>2027</p>
     <p class="hero-meta"><b>Bled Castle</b><b>Slovenia</b></p>
     <ul class="count">
-      <li><span class="n" data-days>&ndash;</span><span class="l">dager</span></li>
-      <li><span class="n" data-hours>&ndash;</span><span class="l">timer</span></li>
-      <li><span class="n" data-mins>&ndash;</span><span class="l">minutter</span></li>
+      <li><span class="n" data-days>&ndash;</span><span class="l" lang="nb">dager</span><span class="l" lang="en">days</span></li>
+      <li><span class="n" data-hours>&ndash;</span><span class="l" lang="nb">timer</span><span class="l" lang="en">hours</span></li>
+      <li><span class="n" data-mins>&ndash;</span><span class="l" lang="nb">minutter</span><span class="l" lang="en">minutes</span></li>
     </ul>
   </div>
 </header>
 
 <nav aria-label="Innhold">
   <ul>
-    <li><a href="#program">Program</a></li>
-    <li><a href="#reise">Reise</a></li>
-    <li><a href="#kart">Kart</a></li>
-    <li><a href="#overnatting">Overnatting</a></li>
-    <li><a href="#kleskode">Kleskode</a></li>
-    <li><a href="#gaver">Gaver</a></li>
-    <li><a href="#svar">Svar</a></li>
-    <li><a href="#sporsmal">Spørsmål</a></li>
+    <li><a href="#program"><span lang="nb">Program</span><span lang="en">Programme</span></a></li>
+    <li><a href="#reise"><span lang="nb">Reise</span><span lang="en">Travel</span></a></li>
+    <li><a href="#kart"><span lang="nb">Kart</span><span lang="en">Map</span></a></li>
+    <li><a href="#overnatting"><span lang="nb">Overnatting</span><span lang="en">Stay</span></a></li>
+    <li><a href="#kleskode"><span lang="nb">Kleskode</span><span lang="en">Dress code</span></a></li>
+    <li><a href="#gaver"><span lang="nb">Gaver</span><span lang="en">Gifts</span></a></li>
+    <li><a href="#svar"><span lang="nb">Svar</span><span lang="en">RSVP</span></a></li>
+    <li><a href="#sporsmal"><span lang="nb">Spørsmål</span><span lang="en">FAQ</span></a></li>
+    <li><button class="sprak" type="button" data-sprak><span lang="nb">EN</span><span lang="en">NO</span></button></li>
   </ul>
 </nav>
 
 <main class="wrap">
 
   <section id="velkommen">
-    <h2>Velkommen til bryllup</h2>
-    <p class="sub">ved det magiske Bled Castle i Slovenia</p>
-    <p class="intro">Vi gifter oss på 10-årsdagen vår, lørdag 17. juli 2027, i slottsparken på Bled Castle. Vi håper dere vil feire denne store dagen med oss. På denne siden finner dere informasjon om alt det praktiske, og den vil oppdateres fram mot bryllupet, så ta gjerne en titt igjen når det nærmer seg. Bare å spørre oss om det skulle være noe.</p>
+    <h2 lang="nb">Velkommen til bryllup</h2><h2 lang="en">Welcome to our wedding</h2>
+    <p class="sub" lang="nb">ved det magiske Bled Castle i Slovenia</p><p class="sub" lang="en">at the magical Bled Castle in Slovenia</p>
+    <p class="intro" lang="nb">Vi gifter oss på 10-årsdagen vår, lørdag 17. juli 2027, i slottsparken på Bled Castle. Vi håper dere vil feire denne store dagen med oss. På denne siden finner dere informasjon om alt det praktiske, og den vil oppdateres fram mot bryllupet, så ta gjerne en titt igjen når det nærmer seg. Bare å spørre oss om det skulle være noe.</p><p class="intro" lang="en">We're getting married on our 10-year anniversary, Saturday 17 July 2027, in the castle park at Bled Castle. We hope you will celebrate this big day with us. On this page you'll find all the practical information, and it will be updated as the wedding approaches, so do check back closer to the date. Just ask us if there's anything at all.</p>
     <figure class="illu"><img src="bilder/bledcastle.jpg" alt="Bled Castle på klippen over Bledsjøen, med øya og kirken i sjøen og snødekte alper bak" loading="lazy" onerror="this.parentNode.remove()"></figure>
     <svg class="divider" viewBox="0 0 140 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <path d="M2 11h44M94 11h44" stroke="var(--line)" stroke-width="1"/>
@@ -446,132 +480,133 @@ html:not(.apnet){overflow:hidden}
   </section>
 
   <section id="program">
-    <h2>Program</h2>
+    <h2 lang="nb">Program</h2><h2 lang="en">Programme</h2>
     <figure class="illu"><img src="bilder/program.jpg" alt="" loading="lazy" onerror="this.parentNode.remove()"></figure>
 
     <div class="program-block">
-      <p class="day">Fredag 16. juli</p>
+      <p class="day" lang="nb">Fredag 16. juli</p><p class="day" lang="en">Friday 16 July</p>
       <ul class="tl">
         <li>
           <time>19.00</time>
-          <div><b>Icebreaker</b><span>Vi inviterer til en icebreaker ved Hotel Astoria slik at dere kan bli litt bedre kjent før selve dagen. Vi serverer lett fingermat og drikke kan kjøpes i baren.</span></div>
+          <div lang="nb"><b>Icebreaker</b><span>Vi inviterer til en icebreaker ved Hotel Astoria slik at dere kan bli litt bedre kjent før selve dagen. Vi serverer lett fingermat og drikke kan kjøpes i baren.</span></div><div lang="en"><b>Icebreaker</b><span>We invite you to an icebreaker at Hotel Astoria so you can get to know each other a little before the big day. We serve light finger food, and drinks can be bought at the bar.</span></div>
         </li>
       </ul>
     </div>
 
     <div class="program-block">
-      <p class="day">Lørdag 17. juli</p>
+      <p class="day" lang="nb">Lørdag 17. juli</p><p class="day" lang="en">Saturday 17 July</p>
       <ul class="tl">
         <li>
           <time>13.30</time>
-          <div><b>Ankomst</b><span>Møt opp i Bled Castle Park senest 30 minutter før seremonien. Vi undersøker muligheten for en felles buss fra hotellet til Bled Castle, bussen vil da gå kl. 13.30.</span></div>
+          <div lang="nb"><b>Ankomst</b><span>Møt opp i Bled Castle Park senest 30 minutter før seremonien. Vi undersøker muligheten for en felles buss fra hotellet til Bled Castle, bussen vil da gå kl. 13.30.</span></div><div lang="en"><b>Arrival</b><span>Please be at Bled Castle Park no later than 30 minutes before the ceremony. We are looking into a shared bus from the hotel to Bled Castle; if so, it will leave at 13.30.</span></div>
         </li>
         <li>
           <time>14.00</time>
-          <div><b>Seremoni</b><span>Bled Castle Park.</span></div>
+          <div lang="nb"><b>Seremoni</b><span>Bled Castle Park.</span></div><div lang="en"><b>Ceremony</b><span>Bled Castle Park.</span></div>
         </li>
         <li>
           <time>15.00</time>
-          <div><b>Photoshoot og sightseeing av slottet</b><span>Etter seremonien vil vi ha litt tid til å ta bilder med fotograf i parken, og dere får tid til å se dere rundt i slottet før vi samles på øverste terrasse. Anbefaler å ta en tur for å se vinkjelleren.</span></div>
+          <div lang="nb"><b>Photoshoot og sightseeing av slottet</b><span>Etter seremonien vil vi ha litt tid til å ta bilder med fotograf i parken, og dere får tid til å se dere rundt i slottet før vi samles på øverste terrasse. Anbefaler å ta en tur for å se vinkjelleren.</span></div><div lang="en"><b>Photoshoot and exploring the castle</b><span>After the ceremony we will take some time for photos with the photographer in the park, and you will have time to look around the castle before we gather on the upper terrace. We recommend a visit to the wine cellar.</span></div>
         </li>
         <li>
           <time>17.00</time>
-          <div><b>Bryllupsmiddag</b><span>På øverste terrasse. Det serveres velkomstbobler etterfulgt av en 4 retters middag og dessertbord.</span></div>
+          <div lang="nb"><b>Bryllupsmiddag</b><span>På øverste terrasse. Det serveres velkomstbobler etterfulgt av en 4 retters middag og dessertbord.</span></div><div lang="en"><b>Wedding dinner</b><span>On the upper terrace. Welcome bubbles followed by a four-course dinner and a dessert table.</span></div>
         </li>
         <li>
           <time>20.00</time>
-          <div><b>Fest, dans og leker</b><span>Vi fortsetter feiringen på dansegulvet.</span></div>
+          <div lang="nb"><b>Fest, dans og leker</b><span>Vi fortsetter feiringen på dansegulvet.</span></div><div lang="en"><b>Party, dancing and games</b><span>The celebration continues on the dance floor.</span></div>
         </li>
         <li>
           <time>01.00</time>
-          <div><b>Avslutning</b><span>Bussen tilbake til hotellet går kl. 01.15.</span></div>
+          <div lang="nb"><b>Avslutning</b><span>Bussen tilbake til hotellet går kl. 01.15.</span></div><div lang="en"><b>End of the night</b><span>The bus back to the hotel leaves at 01.15.</span></div>
         </li>
       </ul>
     </div>
   </section>
 
   <section id="reise">
-    <h2>Reise</h2>
-    <p class="sub">Slik kommer dere til Bled</p>
+    <h2 lang="nb">Reise</h2><h2 lang="en">Travel</h2>
+    <p class="sub" lang="nb">Slik kommer dere til Bled</p><p class="sub" lang="en">Getting to Bled</p>
     <div class="stack">
       <div class="card">
-        <h3>Fly</h3>
-        <p>Nærmeste flyplass er Ljubljana lufthavn (LJU). Det går ikke direktefly fra Norge, så regn med én mellomlanding og en reisetid på ca. <span class="pending">5–7 timer</span> totalt.</p>
-        <p>Fra flyplassen er det ca. 30 minutter med taxi til Bled.</p>
+        <h3 lang="nb">Fly</h3><h3 lang="en">Flights</h3>
+        <p lang="nb">Nærmeste flyplass er Ljubljana lufthavn (LJU). Det går ikke direktefly fra Norge, så regn med én mellomlanding og en reisetid på ca. <span class="pending">5–7 timer</span> totalt.</p><p lang="en">The nearest airport is Ljubljana Airport (LJU). There are no direct flights from Norway, so expect one stopover and a total travel time of about <span class="pending">5–7 hours</span>.</p>
+        <p lang="nb">Fra flyplassen er det ca. 30 minutter med taxi til Bled.</p><p lang="en">From the airport it is about 30 minutes by taxi to Bled.</p>
       </div>
       <div class="card">
-        <h3>Papirer</h3>
-        <p>Slovenia er i EU og Schengen. Norske statsborgere trenger gyldig pass eller nasjonalt ID-kort. Sjekk at passet ikke går ut i løpet av 2027.</p>
+        <h3 lang="nb">Papirer</h3><h3 lang="en">Documents</h3>
+        <p lang="nb">Slovenia er i EU og Schengen. Norske statsborgere trenger gyldig pass eller nasjonalt ID-kort. Sjekk at passet ikke går ut i løpet av 2027.</p><p lang="en">Slovenia is in the EU and Schengen. Norwegian citizens need a valid passport or national ID card. Check that your passport does not expire during 2027, and check the entry requirements for your own nationality.</p>
       </div>
     </div>
     <figure class="illu illu-after"><img src="bilder/reise.jpg" alt="Koffert, norsk pass og boardingkort i en flyplasslounge, med fly og fjell utenfor vinduet" loading="lazy" onerror="this.parentNode.remove()"></figure>
   </section>
 
   <section id="kart">
-    <h2>Hvor</h2>
-    <p class="sub">Begge stedene på ett kart</p>
+    <h2 lang="nb">Hvor</h2><h2 lang="en">Where</h2>
+    <p class="sub" lang="nb">Begge stedene på ett kart</p><p class="sub" lang="en">Both places on one map</p>
     <div class="map">
       <div id="kart-flate" aria-label="Kart over Hotel Astoria Bled og Bled Castle"></div>
       <noscript><p>Kartet trenger JavaScript. Bruk lenkene under for å åpne stedene i Google Maps.</p></noscript>
     </div>
     <div class="stack">
       <div class="card place">
-        <h3>Overnatting og icebreaker</h3>
+        <h3 lang="nb">Overnatting og icebreaker</h3><h3 lang="en">Stay and icebreaker</h3>
         <b class="place-name">Hotel Astoria Bled</b>
         <p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Prešernova cesta 44, 4260 Bled, Slovenia</span></p>
         <p class="links">
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Se på kart</a>
-          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Veibeskrivelse</a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener"><span lang="nb">Se på kart</span><span lang="en">View on map</span></a>
+          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener"><span lang="nb">Veibeskrivelse</span><span lang="en">Directions</span></a>
         </p>
       </div>
       <div class="card place">
-        <h3>Vielse og fest</h3>
+        <h3 lang="nb">Vielse og fest</h3><h3 lang="en">Ceremony and celebration</h3>
         <b class="place-name">Bled Castle</b>
         <p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Grajska cesta 61, 4260 Bled, Slovenia</span></p>
         <p class="links">
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=Bled+Castle,+Grajska+cesta+61,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Se på kart</a>
-          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Bled+Castle,+Grajska+cesta+61,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Veibeskrivelse</a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Bled+Castle,+Grajska+cesta+61,+4260+Bled,+Slovenia" target="_blank" rel="noopener"><span lang="nb">Se på kart</span><span lang="en">View on map</span></a>
+          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Bled+Castle,+Grajska+cesta+61,+4260+Bled,+Slovenia" target="_blank" rel="noopener"><span lang="nb">Veibeskrivelse</span><span lang="en">Directions</span></a>
         </p>
       </div>
     </div>
   </section>
 
   <section id="overnatting">
-    <h2>Overnatting</h2>
+    <h2 lang="nb">Overnatting</h2><h2 lang="en">Stay</h2>
     <div class="stack">
       <div class="card place">
         <div class="place-head">
           <b class="place-name">Hotel Astoria Bled</b>
-          <span class="pill">Rabattert pris for gjestene</span>
+          <span class="pill" lang="nb">Rabattert pris for gjestene</span><span class="pill" lang="en">Discounted rate for guests</span>
         </div>
-        <p>Vi har ordnet rabatt her, og det er ca. 15 minutters spasertur til Bled Castle. Icebreakeren er også på hotellet.</p>
-        <p>Lenken under er forhåndsutfylt med 16.–18. juli for to personer. Datoer og antall kan endres i bookingen.</p>
+        <p lang="nb">Vi har ordnet rabatt her, og det er ca. 15 minutters spasertur til Bled Castle. Icebreakeren er også på hotellet.</p><p lang="en">We have arranged a discount here, and it is about a 15-minute walk to Bled Castle. The icebreaker is at the hotel as well.</p>
+        <p lang="nb">Lenken under er forhåndsutfylt med 16.–18. juli for to personer. Datoer og antall kan endres i bookingen.</p><p lang="en">The link below is pre-filled with 16–18 July for two people. Dates and number of guests can be changed in the booking.</p>
         <p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Prešernova cesta 44, 4260 Bled, Slovenia</span></p>
         <p class="links">
-          <a class="btn-accent" href="https://booking.profitroom.com/en/hotelastoriabled1/pricelist/offers/1086720/?check-in=2027-07-16&amp;check-out=2027-07-18&amp;currency=EUR&amp;r1_adults=2&amp;no-cache=1" target="_blank" rel="noopener">Book med rabatt</a>
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Se på kart</a>
+          <a class="btn-accent" href="https://booking.profitroom.com/en/hotelastoriabled1/pricelist/offers/1086720/?check-in=2027-07-16&amp;check-out=2027-07-18&amp;currency=EUR&amp;r1_adults=2&amp;no-cache=1" target="_blank" rel="noopener"><span lang="nb">Book med rabatt</span><span lang="en">Book with discount</span></a>
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener"><span lang="nb">Se på kart</span><span lang="en">View on map</span></a>
         </p>
-        <p>Siste frist for å få rabatten er 31.03.2027.</p>
+        <p lang="nb">Siste frist for å få rabatten er 31.03.2027.</p><p lang="en">The deadline for the discount is 31 March 2027.</p>
       </div>
       <figure class="illu illu-mid"><img src="bilder/overnatting.jpg" alt="Hotell ved Bledsjøen med terrasse og blomsterkasser, slottet på klippen bak" loading="lazy" onerror="this.parentNode.remove()"></figure>
       <div class="card">
-        <h3>Andre alternativer</h3>
-        <p>Bled har mange hoteller, leiligheter og pensjonater i alle prisklasser. Juli er høysesong, så book tidlig.</p>
+        <h3 lang="nb">Andre alternativer</h3><h3 lang="en">Other options</h3>
+        <p lang="nb">Bled har mange hoteller, leiligheter og pensjonater i alle prisklasser. Juli er høysesong, så book tidlig.</p><p lang="en">Bled has plenty of hotels, apartments and guesthouses in every price range. July is high season, so book early.</p>
       </div>
     </div>
   </section>
 
   <section id="kleskode" aria-label="Kleskode">
     <!-- Overskrift og undertekst ligger i selve bildet. -->
-    <figure class="illu"><img src="bilder/kleskode.jpg" alt="Kleskode: sommerlig pent. Kle dere gjerne sommerlig og pent, men viktigst av alt – kom i noe dere trives i. Både lyse dresser og mørk blå eller sort dress er helt fint. Greit å vite: det er brostein og litt bakke opp til slottet, så velg sko dere går godt i. Juli i Bled er varmt, ofte 25–30 grader, men kveldene ved innsjøen kan bli kjølige – ta gjerne med et sjal eller en lett jakke. For damer: kjole, skjørt eller pent antrekk. For herrer: dress eller pent antrekk." loading="lazy" onerror="this.parentNode.remove()"></figure>
+    <figure class="illu" lang="nb"><img src="bilder/kleskode.jpg" alt="Kleskode: sommerlig pent. Kle dere gjerne sommerlig og pent, men viktigst av alt – kom i noe dere trives i. Både lyse dresser og mørk blå eller sort dress er helt fint. Greit å vite: det er brostein og litt bakke opp til slottet, så velg sko dere går godt i. Juli i Bled er varmt, ofte 25–30 grader, men kveldene ved innsjøen kan bli kjølige – ta gjerne med et sjal eller en lett jakke. For damer: kjole, skjørt eller pent antrekk. For herrer: dress eller pent antrekk." loading="lazy" onerror="this.parentNode.remove()"></figure>
+    <figure class="illu" lang="en"><img src="bilder/kleskode-en.jpg" alt="Dress code: summer elegant. Feel free to dress summery and elegant, but most importantly, wear something you feel comfortable in. Please use what you already have; both light colours and dark blue or black attire are perfectly fine. Good to know: there is cobblestone and a slight uphill walk to the castle, so choose shoes you can walk comfortably in. July in Bled is warm, often between 25 and 30 degrees Celsius. The evenings by the lake can be chilly, so feel free to bring a shawl or a light jacket. For ladies: dress, skirt or elegant outfit. For gentlemen: suit or elegant outfit." loading="lazy" onerror="this.parentNode.remove()"></figure>
   </section>
 
   <section id="mat">
-    <h2>Mat og drikke</h2>
+    <h2 lang="nb">Mat og drikke</h2><h2 lang="en">Food and drink</h2>
     <div class="card">
-      <p>Til middag serveres det en fire retters meny med kald forrett, suppe, varm forrett og hovedrett. Senere på kvelden blir det satt opp et dessertbord som dere kan forsyne dere fritt fra.</p>
-      <p>Det blir fri bar med vann, brus, kaffe, øl og vin gjennom kvelden. Det vil også være en drinkbar hvor dere kan kjøpe drinker selv. Drinkene vil være Aperol Spritz, Hugo Spritz og Espresso Martini.</p>
-      <p>Har dere allergier, intoleranser eller andre hensyn, gi oss beskjed når dere svarer på invitasjonen.</p>
+      <p lang="nb">Til middag serveres det en fire retters meny med kald forrett, suppe, varm forrett og hovedrett. Senere på kvelden blir det satt opp et dessertbord som dere kan forsyne dere fritt fra.</p><p lang="en">Dinner is a four-course menu with a cold starter, soup, a warm starter and a main course. Later in the evening a dessert table is set up for you to help yourselves.</p>
+      <p lang="nb">Det blir fri bar med vann, brus, kaffe, øl og vin gjennom kvelden. Det vil også være en drinkbar hvor dere kan kjøpe drinker selv. Drinkene vil være Aperol Spritz, Hugo Spritz og Espresso Martini.</p><p lang="en">There is an open bar with water, soft drinks, coffee, beer and wine throughout the evening. There will also be a cocktail bar where you can buy drinks: Aperol Spritz, Hugo Spritz and Espresso Martini.</p>
+      <p lang="nb">Har dere allergier, intoleranser eller andre hensyn, gi oss beskjed når dere svarer på invitasjonen.</p><p lang="en">If you have any allergies, intolerances or other needs, please let us know when you reply to the invitation.</p>
     </div>
     <div class="illu-pair">
       <figure class="illu illu-after"><img src="bilder/drinker.jpg" alt="Aperol Spritz, Hugo Spritz og Espresso Martini på en bar" loading="lazy" onerror="this.parentNode.remove()"></figure>
@@ -581,67 +616,68 @@ html:not(.apnet){overflow:hidden}
 
   <section id="gaver" aria-label="Gaver">
     <!-- Overskrift og tekst ligger i selve bildet. -->
-    <figure class="illu"><img src="bilder/gaver.jpg" alt="Gaver. Det viktigste for oss er at dere kommer. Etter 10 år sammen har vi det vi trenger, så vi ønsker oss helst bidrag til bryllupsreisen. Ønsker dere å gi noe fysisk, setter vi stor pris på å få det i Norge, siden det blir vanskelig å få med gaver hjem fra Slovenia." loading="lazy" onerror="this.parentNode.remove()"></figure>
+    <figure class="illu" lang="nb"><img src="bilder/gaver.jpg" alt="Gaver. Det viktigste for oss er at dere kommer. Etter 10 år sammen har vi det vi trenger, så vi ønsker oss helst bidrag til bryllupsreisen. Ønsker dere å gi noe fysisk, setter vi stor pris på å få det i Norge, siden det blir vanskelig å få med gaver hjem fra Slovenia." loading="lazy" onerror="this.parentNode.remove()"></figure>
+    <figure class="illu" lang="en"><img src="bilder/gaver-en.jpg" alt="Gifts. The most important thing for us is that you come. After 10 years together we have what we need, so what we would love most is a contribution to our honeymoon. If you would like to give something physical, we would be grateful to receive it in Norway, as it will be difficult to bring gifts home from Slovenia." loading="lazy" onerror="this.parentNode.remove()"></figure>
   </section>
 
   <section id="bled">
-    <h2>Mens dere er her</h2>
-    <p class="sub">Bled er verdt noen ekstra dager</p>
+    <h2 lang="nb">Mens dere er her</h2><h2 lang="en">While you are here</h2>
+    <p class="sub" lang="nb">Bled er verdt noen ekstra dager</p><p class="sub" lang="en">Bled is worth a few extra days</p>
     <figure class="illu"><img src="bilder/bled.jpg" alt="" loading="lazy" onerror="this.parentNode.remove()"></figure>
     <div class="card">
-      <p>Rundt Bledsjøen går det en tur på seks kilometer, og ute på øya i midten ligger kirken man ror til. Vintgar-juvet er en kort kjøretur unna, Triglav nasjonalpark starter rett utenfor byen, og Ljubljana er omtrent en time med bil. Mange gjester velger å legge på noen dager.</p>
+      <p lang="nb">Rundt Bledsjøen går det en tur på seks kilometer, og ute på øya i midten ligger kirken man ror til. Vintgar-juvet er en kort kjøretur unna, Triglav nasjonalpark starter rett utenfor byen, og Ljubljana er omtrent en time med bil. Mange gjester velger å legge på noen dager.</p><p lang="en">A six-kilometre walk circles Lake Bled, and on the island in the middle is the church you row out to. Vintgar Gorge is a short drive away, Triglav National Park starts just outside town, and Ljubljana is about an hour by car. Many guests choose to add a few days.</p>
     </div>
   </section>
 
   <section id="sporsmal">
-    <h2>Vanlige spørsmål</h2>
-    <p class="sub">Er det noe mer, bare spør oss</p>
+    <h2 lang="nb">Vanlige spørsmål</h2><h2 lang="en">Frequently asked questions</h2>
+    <p class="sub" lang="nb">Er det noe mer, bare spør oss</p><p class="sub" lang="en">Anything else, just ask us</p>
     <details>
-      <summary>Kan jeg ta med barn?</summary>
-      <p>Vi ønsker at bryllupet vårt skal være en voksenfeiring, og inviterer derfor i utgangspunktet gjester fra 18 år og oppover. Hør med oss dersom dere er usikre.</p>
-      <p>Spedbarn er selvfølgelig hjertelig velkomne. Vi ønsker ikke at nybakte foreldre skal måtte takke nei fordi det ikke er mulig å være borte fra den minste. Dersom dere har behov for å ha med en barnevakt eller to, er vedkommende hjertelig velkommen til middag.</p>
-      <p>Gi oss gjerne beskjed på forhånd dersom spedbarn eller barnevakt skal ha plass ved bordet, så sørger vi for at det blir ordnet.</p>
+      <summary lang="nb">Kan jeg ta med barn?</summary><summary lang="en">Can I bring children?</summary>
+      <p lang="nb">Vi ønsker at bryllupet vårt skal være en voksenfeiring, og inviterer derfor i utgangspunktet gjester fra 18 år og oppover. Hør med oss dersom dere er usikre.</p><p lang="en">We would like our wedding to be an adult celebration, so as a rule we invite guests aged 18 and over. Check with us if you are unsure.</p>
+      <p lang="nb">Spedbarn er selvfølgelig hjertelig velkomne. Vi ønsker ikke at nybakte foreldre skal måtte takke nei fordi det ikke er mulig å være borte fra den minste. Dersom dere har behov for å ha med en barnevakt eller to, er vedkommende hjertelig velkommen til middag.</p><p lang="en">Infants are of course very welcome. We do not want new parents to have to decline because they cannot be away from the little one. If you need to bring a babysitter or two, they are very welcome to join us for dinner.</p>
+      <p lang="nb">Gi oss gjerne beskjed på forhånd dersom spedbarn eller barnevakt skal ha plass ved bordet, så sørger vi for at det blir ordnet.</p><p lang="en">Please let us know in advance if an infant or babysitter needs a place at the table, and we will make sure it is arranged.</p>
     </details>
     <details>
-      <summary>Kan jeg ta med følge?</summary>
-      <p>Ja, det synes vi er veldig hyggelig! Vi setter bare pris på å få møte vedkommende før bryllupet, dersom det er mulig.</p>
+      <summary lang="nb">Kan jeg ta med følge?</summary><summary lang="en">Can I bring a plus-one?</summary>
+      <p lang="nb">Ja, det synes vi er veldig hyggelig! Vi setter bare pris på å få møte vedkommende før bryllupet, dersom det er mulig.</p><p lang="en">Yes, we would love that! We would just appreciate meeting them before the wedding, if possible.</p>
     </details>
     <details>
-      <summary>Når bør jeg booke fly?</summary>
-      <p>Prisene varierer en del, og det er foreløpig ikke så mange avganger tilgjengelig så langt frem i tid. Vi ville derfor kanskje ventet til rett over nyttår før dere bestiller.</p>
-      <p>Vi følger med på prisene og rutene fremover, og gir gjerne beskjed dersom vi ser gode priser eller aktuelle avganger.</p>
+      <summary lang="nb">Når bør jeg booke fly?</summary><summary lang="en">When should I book flights?</summary>
+      <p lang="nb">Prisene varierer en del, og det er foreløpig ikke så mange avganger tilgjengelig så langt frem i tid. Vi ville derfor kanskje ventet til rett over nyttår før dere bestiller.</p><p lang="en">Prices vary quite a bit, and there are not many departures available this far ahead yet. We would perhaps wait until just after New Year before booking.</p>
+      <p lang="nb">Vi følger med på prisene og rutene fremover, og gir gjerne beskjed dersom vi ser gode priser eller aktuelle avganger.</p><p lang="en">We are keeping an eye on prices and routes, and will happily let you know if we spot good fares or suitable departures.</p>
     </details>
     <details>
-      <summary>Hvor lenge bør jeg bli?</summary>
-      <p>Vi anbefaler å komme senest fredag ettermiddag dersom dere ønsker å bli med på icebreaker fredag kveld. Reiser dere hjem søndag, får dere med dere hele bryllupshelgen.</p>
-      <p>Har dere mulighet til å bli litt lenger, vil vi absolutt anbefale det. Slovenia er en litt ukjent perle, med mye å oppleve på relativt korte avstander, og passer perfekt for noen ekstra feriedager før eller etter bryllupet.</p>
+      <summary lang="nb">Hvor lenge bør jeg bli?</summary><summary lang="en">How long should I stay?</summary>
+      <p lang="nb">Vi anbefaler å komme senest fredag ettermiddag dersom dere ønsker å bli med på icebreaker fredag kveld. Reiser dere hjem søndag, får dere med dere hele bryllupshelgen.</p><p lang="en">We recommend arriving by Friday afternoon at the latest if you want to join the icebreaker on Friday evening. If you travel home on Sunday, you get the whole wedding weekend.</p>
+      <p lang="nb">Har dere mulighet til å bli litt lenger, vil vi absolutt anbefale det. Slovenia er en litt ukjent perle, med mye å oppleve på relativt korte avstander, og passer perfekt for noen ekstra feriedager før eller etter bryllupet.</p><p lang="en">If you can stay a little longer, we would definitely recommend it. Slovenia is a bit of a hidden gem, with lots to see within short distances, and is perfect for a few extra holiday days before or after the wedding.</p>
     </details>
     <details>
-      <summary>Skjer det noe på søndag?</summary>
-      <p>Vi har foreløpig ingen faste planer på søndag. Dagen er derfor fri til en rolig morgen med frokost, litt sightseeing eller hjemreise. Alt etter hva som passer best for dere.</p>
-      <p>For dem som blir igjen i Bled, håper vi selvfølgelig å få sagt ordentlig hadet før dere reiser videre.</p>
+      <summary lang="nb">Skjer det noe på søndag?</summary><summary lang="en">Is anything happening on Sunday?</summary>
+      <p lang="nb">Vi har foreløpig ingen faste planer på søndag. Dagen er derfor fri til en rolig morgen med frokost, litt sightseeing eller hjemreise. Alt etter hva som passer best for dere.</p><p lang="en">We have no fixed plans for Sunday yet. The day is free for a slow morning with breakfast, some sightseeing or the journey home, whatever suits you best.</p>
+      <p lang="nb">For dem som blir igjen i Bled, håper vi selvfølgelig å få sagt ordentlig hadet før dere reiser videre.</p><p lang="en">For those staying on in Bled, we of course hope to say a proper goodbye before you travel on.</p>
     </details>
     <details>
-      <summary>Hvordan kommer jeg meg til seremonien?</summary>
-      <p>Vi undersøker muligheten for en felles buss. Det er kun 15 min å gå, men det er grusvei og bratt.</p>
+      <summary lang="nb">Hvordan kommer jeg meg til seremonien?</summary><summary lang="en">How do I get to the ceremony?</summary>
+      <p lang="nb">Vi undersøker muligheten for en felles buss. Det er kun 15 min å gå, men det er grusvei og bratt.</p><p lang="en">We are looking into a shared bus. It is only a 15-minute walk, but the path is gravel and steep.</p>
     </details>
   </section>
 
 </main>
 
 <section class="rsvp" id="svar">
-  <h2>Svar</h2>
-  <p class="sub">Innen 31. mars 2027</p>
-  <p>Send oss en melding eller e-post, og si samtidig fra om allergier eller intoleranser.</p>
-  <p>I mars vil vi begynne å spørre rundt for endelig svar.</p>
-  <p><a class="btn" href="mailto:synne_enstrom@hotmail.com?subject=Svar%20p%C3%A5%20bryllupsinvitasjonen">Send oss en e-post</a></p>
+  <h2 lang="nb">Svar</h2><h2 lang="en">RSVP</h2>
+  <p class="sub" lang="nb">Innen 31. mars 2027</p><p class="sub" lang="en">By 31 March 2027</p>
+  <p lang="nb">Send oss en melding eller e-post, og si samtidig fra om allergier eller intoleranser.</p><p lang="en">Send us a message or an email, and let us know about any allergies or intolerances at the same time.</p>
+  <p lang="nb">I mars vil vi begynne å spørre rundt for endelig svar.</p><p lang="en">In March we will start asking around for final answers.</p>
+  <p><a class="btn" lang="nb" href="mailto:synne_enstrom@hotmail.com?subject=Svar%20p%C3%A5%20bryllupsinvitasjonen">Send oss en e-post</a><a class="btn" lang="en" href="mailto:synne_enstrom@hotmail.com?subject=Reply%20to%20the%20wedding%20invitation">Send us an email</a></p>
 </section>
 
 <footer class="wrap">
-  <p>Vi gleder oss masse!</p>
+  <p lang="nb">Vi gleder oss masse!</p><p lang="en">We can't wait!</p>
   <figure class="oss">
     <img src="bilder/kogs.jpg" alt="Kristoffer og Synne, tett inntil hverandre og smilende, foran en opplyst steintrapp" width="677" height="899" loading="lazy" onerror="this.parentNode.remove()">
-    <figcaption>Bled Castle, 17. juli 2024</figcaption>
+    <figcaption lang="nb">Bled Castle, 17. juli 2024</figcaption><figcaption lang="en">Bled Castle, 17 July 2024</figcaption>
   </figure>
   <p class="sign">Kristoffer og Synne</p>
 </footer>
@@ -687,6 +723,19 @@ html:not(.apnet){overflow:hidden}
     kart.fitBounds(steder.map(function(st){ return st.pos; }), {padding:[40,90]});
   }
   if(document.readyState === "complete"){ start(); } else { window.addEventListener("load", start); }
+})();
+</script>
+<script>
+(function(){
+  var html = document.documentElement;
+  document.querySelectorAll("[data-sprak]").forEach(function(knapp){
+    knapp.addEventListener("click", function(){
+      var en = !html.classList.contains("en");
+      html.classList.toggle("en", en);
+      html.lang = en ? "en" : "nb";
+      try{ localStorage.setItem("sprak", html.lang); }catch(e){}
+    });
+  });
 })();
 </script>
 <script>

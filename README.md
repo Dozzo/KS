@@ -35,13 +35,28 @@ solnedgangen og oss i bildet.
 
 ## Farger
 
-Paletten er sampla ut av `bilder/panorama.jpg`, ikke gjettet: bakgrunnen er
-murens beige, og skriften er solnedgangens rustoransje. Alle verdiene ligger
-som variabler oyerst i `index.html`.
+Hvit bakgrunn og sort brødtekst. To aksentfarger hentet fra invitasjonen:
+dempet rosa (`--accent`) på overskrifter, lenker og Svar-feltet, og gull
+(`--script-ink`) på skriftfonten og tallene. Alle verdiene ligger som
+variabler øverst i `index.html`. Siden følger med vilje ikke mørkt
+systemtema.
 
-Siden er lys i alle temaer, og folger med vilje ikke morkt systemtema — beigen
-er en del av uttrykket. Hver tekstfarge er malt mot bakgrunnen den faktisk star
-pa og ligger over WCAG AA. Endrer du en farge, mal den pa nytt.
+## Konvolutt
+
+Siden åpner som en lukket konvolutt (`bilder/konvolutt.jpg`) som animeres
+i lag: klaffen med seglet vipper opp, og kortet av håndlaget papir
+(`kort.jpg` + `kort-maske.png`) trekkes ut. `konvolutt-uten.jpg` er
+fotoet med seglet fylt inn, `konvolutt-inn.jpg` er flatt papir til
+innsiden. Konvolutten vises bare første gang i økten, og aldri når noen
+kommer via en direktelenke med `#`.
+
+## Språk
+
+Alt innhold ligger på både norsk og engelsk i `index.html`, merket
+`lang="nb"` og `lang="en"` på hvert element. Klassen `en` på `<html>`
+styrer hva som vises; NO/EN-knappen i menyen bytter, og valget huskes i
+localStorage. Norsk er standard. Endrer du en
+tekst, husk å endre begge versjonene.
 
 ## Se siden lokalt
 
