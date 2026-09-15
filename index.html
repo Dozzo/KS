@@ -328,11 +328,13 @@ html:not(.apnet){overflow:hidden}
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
   transform-origin:50% 50%;
 }
-.env-kort small{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
-.env-kort b{font-family:var(--script);font-weight:500;font-size:clamp(1.4rem,6vw,2.1rem);line-height:1.5;white-space:nowrap;color:var(--script-ink)}
-.env-kort i{font-family:var(--numeral);font-style:normal;font-size:1.25rem;letter-spacing:.24em;color:var(--ink)}
+/* Skriften folger kortets bredde (--bredde), ikke skjermen, sa den aldri
+   blir bredere enn kortet pa lave laptop-skjermer. */
+.env-kort small{font-size:clamp(.55rem,calc(var(--bredde) * .023),.7rem);letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.env-kort b{font-family:var(--script);font-weight:500;font-size:clamp(1.15rem,calc(var(--bredde) * .068),2.1rem);line-height:1.5;white-space:nowrap;color:var(--script-ink)}
+.env-kort i{font-family:var(--numeral);font-style:normal;font-size:clamp(.9rem,calc(var(--bredde) * .042),1.25rem);letter-spacing:.24em;color:var(--ink)}
 .env-kort i em{font-family:var(--serif);font-style:normal;font-weight:300;color:var(--rule);margin:0 .05em}
-.env-kort u{text-decoration:none;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);margin-top:4px}
+.env-kort u{text-decoration:none;font-size:clamp(.55rem,calc(var(--bredde) * .024),.72rem);letter-spacing:.22em;text-transform:uppercase;color:var(--ink);margin-top:4px}
 /* Skyggen kortet kaster nar det ligger foran konvolutten */
 .env-kort::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(150,120,60,.18);pointer-events:none}
 .env-skygge{
