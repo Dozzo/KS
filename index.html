@@ -7,47 +7,46 @@
 <meta name="description" content="Praktisk informasjon til bryllupet ved Bled Castle i Slovenia, 17. juli 2027.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=WindSong:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=WindSong:wght@400;500&family=MonteCarlo&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" crossorigin="">
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" crossorigin=""></script>
 <style>
 /* ---------------------------------------------------------------
-   Paletten er sampla rett ut av panoramabildet, ikke gjettet.
+   Hvit bakgrunn og sort brodtekst. To aksentfarger hentet fra
+   invitasjonen: dempet rosa (--accent) pa overskrifter, lenker og
+   detaljer i serif, og gull (--script-ink) pa skriftfonten
+   (navnene og signaturen). Svar-feltet nederst er fylt med den
+   samme rosa, med hvit tekst.
 
-   Bakgrunnen er murens beige. Steinen i bildet ligger pa H32 med lav
-   metning, men er for mork til a vaere bakgrunn, sa tonen er lofta til
-   87 % lyshet og beholder hue og metning fra muren.
+   Gullet er lyst og ligger under WCAG AA mot hvitt; det brukes
+   derfor bare pa stor, dekorativ skrift, aldri pa brodtekst.
 
-   Skriften er solnedgangen: aksenten er rustoransje fra glodet der
-   sola treffer skyene (H20), og brodteksten er den samme rusttonen
-   gjort morkere og roligere, slik at den holder seg lesbar over lange
-   avsnitt. Fjellene #39404B er igjen som morkt band rundt "Svar".
-
-   Lysheten i hver farge er regnet ut fra onsket kontrast mot
-   bakgrunnen den star pa, ikke valgt for hand. Alt ligger over
-   WCAG AA (4,5:1 for brodtekst, 3:1 for dekor og UI).
-   Endrer du en verdi, mal den pa nytt for du committer.
-
-   Siden er lys i alle temaer, og folger med vilje ikke morkt
-   systemtema: beigen er en del av uttrykket.
+   Siden er lys i alle temaer og folger med vilje ikke morkt
+   systemtema.
    --------------------------------------------------------------- */
 :root{
   color-scheme:light;
-  --paper:#ECDFD0;
-  --card:#F7F0E9;
-  --ink:#412213;
-  --ink-soft:#6C4A35;
-  --accent:#A1471A;
-  --accent-soft:#BB652C;
-  --rule:#AC6D3D;
-  --line:#D6BC9F;
-  --leaf:#9F7438;
-  --pending:#516379;
-  --band:#39404B;
-  --band-ink:#ECDFD0;
-  --band-soft:#CAC3BB;
-  --band-line:#5C6675;
-  --band-accent:#E0AA5A;
+  --paper:#FFFFFF;
+  --card:#FAFAFA;
+  --ink:#000000;
+  --ink-soft:#000000;
+  --accent:#B8696E;
+  --accent-soft:#C98A8E;
+  --script-ink:#C9A65C;
+  --rule:#C9A65C;
+  --line:#E3E3E3;
+  --leaf:#C9A65C;
+  --pending:#000000;
+  --band:#B8696E;
+  --band-ink:#FFFFFF;
+  --band-soft:#FFF3F3;
+  --band-line:#D8A0A3;
+  --band-accent:#FFE7B3;
   --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;
   --script:"WindSong","Snell Roundhand","Apple Chancery",cursive;
+  /* Dato og nedtelling. MonteCarlo har lette, skrastilte tall;
+     sperringen ma vaere vid, ellers klumper de seg. */
+  --numeral:"MonteCarlo","Cormorant Garamond",Georgia,serif;
 }
 
 *{box-sizing:border-box}
@@ -98,25 +97,28 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--accent-soft);outli
   .panorama{aspect-ratio:21/9;max-height:80vh}
   .panorama img{object-position:50% 18%}
 }
+/* Toppen folger invitasjonen: lett serif i vanlig skrift, dato i
+   kursiv med vid sperring, og bare nedtellingens etiketter i caps. */
 .eyebrow{
-  margin:0 0 6px;font-size:1rem;font-weight:500;letter-spacing:.34em;
-  text-transform:uppercase;color:var(--ink);
+  margin:0 0 4px;font-size:.95rem;font-weight:400;letter-spacing:.03em;
+  color:var(--ink);
 }
 .names{
   font-family:var(--script);font-weight:500;
   font-size:clamp(1.8rem,8.6vw,2.75rem);line-height:1.8;
-  color:var(--accent);margin:0 0 18px;text-wrap:balance;
+  color:var(--script-ink);margin:0 0 18px;text-wrap:balance;
 }
 .hero-date{
-  margin:0 0 16px;font-weight:300;
-  font-size:clamp(1.2rem,6.6vw,1.9rem);letter-spacing:.2em;color:var(--ink);
+  margin:0 0 22px;font-family:var(--numeral);font-weight:400;
+  font-size:clamp(1.6rem,8vw,2.4rem);line-height:1.2;letter-spacing:.3em;color:var(--ink);
 }
-.hero-date i{font-style:normal;color:var(--rule);margin:0 .1em}
-.hero-meta{margin:0;font-size:1.05rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;color:var(--ink)}
-.hero-meta b{display:block;font-size:1.2rem;font-weight:600;margin-top:8px;color:var(--ink)}
+.hero-date i{font-family:var(--serif);font-style:normal;font-weight:300;color:var(--rule);margin:0 .05em}
+.hero-meta{margin:0;font-size:.9rem;font-weight:400;letter-spacing:.24em;color:var(--ink)}
+.hero-meta b{display:block;font-size:.95rem;font-weight:400;letter-spacing:.24em;color:var(--ink)}
+.hero-meta b+b{margin-top:10px}
 
 .count{display:flex;justify-content:center;gap:28px;margin:32px 0 0;padding:0;list-style:none}
-.count .n{display:block;font-size:1.5rem;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums}
+.count .n{display:block;font-family:var(--numeral);font-size:1.7rem;line-height:1;letter-spacing:.12em;color:var(--script-ink)}
 .count .l{display:block;margin-top:8px;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft)}
 
 /* ---------- nav ---------- */
@@ -145,15 +147,28 @@ nav a:hover{color:var(--accent)}
 /* ---------- seksjoner ---------- */
 section{padding:50px 0 6px}
 h2{
-  margin:0 0 6px;text-align:center;font-weight:400;font-size:1.55rem;
-  letter-spacing:.05em;color:var(--accent);text-wrap:balance;
+  margin:0 0 6px;text-align:center;font-weight:400;font-size:1.4rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--accent);text-wrap:balance;
 }
+/* Velkomsten er den eneste overskriften i vanlig skrift. */
+#velkommen h2{font-size:1.55rem;letter-spacing:.05em;text-transform:none}
 .sub{margin:0 0 28px;text-align:center;font-style:italic;font-size:.9rem;color:var(--ink-soft)}
 h3{
   margin:0 0 6px;font-size:.72rem;letter-spacing:.24em;
   text-transform:uppercase;font-weight:600;color:var(--ink);
 }
 p{margin:0 0 16px;color:var(--ink-soft)}
+.intro{text-align:center;text-wrap:pretty}
+
+/* Illustrasjon under overskriften i hvert avsnitt. Filen heter det
+   samme som avsnittet (bilder/kleskode.jpg osv.). Mangler filen,
+   fjerner onerror hele figuren, sa avsnitt uten bilde ser ut som for. */
+.illu{margin:0 0 24px;border:1px solid var(--line);background:var(--card);overflow:hidden}
+.illu img{display:block;width:100%;height:auto}
+.illu-after{margin:16px 0 0}       /* etter teksten i avsnittet */
+.illu-mid{margin:0}                /* mellom kortene i en .stack, som selv gir luft */
+.illu-pair{display:grid;gap:16px}
+@media (min-width:600px){.illu-pair{grid-template-columns:1fr 1fr}}
 
 .stack{display:flex;flex-direction:column;gap:16px}
 
@@ -162,13 +177,21 @@ p{margin:0 0 16px;color:var(--ink-soft)}
   margin:0 0 16px;border:1px solid var(--line);background:var(--card);
   aspect-ratio:4/3;overflow:hidden;
 }
-.map iframe{display:block;width:100%;height:100%;border:0}
+#kart-flate{width:100%;height:100%}
+#kart-flate .leaflet-tile-pane{filter:saturate(.55) brightness(1.04)}   /* roligere farger */
+/* Nalene bruker sidens rosa; etiketten star ved siden av. */
+.nal{position:relative;width:0;height:0}
+.nal svg{position:absolute;left:-14px;top:-36px;width:28px;height:36px;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3))}
+.nal b{position:absolute;left:14px;top:-34px;white-space:nowrap;
+  font:600 .7rem/1 var(--serif);letter-spacing:.06em;color:var(--ink);background:rgba(255,255,255,.92);padding:5px 8px;border:1px solid var(--line)}
+.nal.venstre b{left:auto;right:14px}   /* etikett pa venstre side av nalen */
+.leaflet-container{font-family:var(--serif)}
 @media (min-width:600px){.map{aspect-ratio:16/10}}
 .place-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 14px;margin:0 0 6px}
 .place-name{display:block;font-size:1.15rem;font-weight:600;color:var(--ink)}
 .pill{
   display:inline-block;padding:4px 12px;border-radius:999px;
-  background:rgba(161,71,26,.12);color:var(--accent);
+  background:rgba(184,105,110,.12);color:var(--accent);
   font-size:.78rem;font-weight:600;letter-spacing:.04em;white-space:nowrap;
 }
 .addr{display:flex;align-items:flex-start;gap:8px;margin:0 0 12px;font-size:.92rem}
@@ -193,6 +216,7 @@ p{margin:0 0 16px;color:var(--ink-soft)}
 .tl time{flex:0 0 66px;padding-top:3px;font-size:.8rem;letter-spacing:.06em;color:var(--accent);font-variant-numeric:tabular-nums}
 .tl b{display:block;font-weight:600;font-size:.95rem;color:var(--ink)}
 .tl span{font-size:.88rem;color:var(--ink-soft)}
+#program h2,#overnatting h2{margin-bottom:24px}   /* ingen undertekst her */
 .program-block{display:flex;flex-direction:column;gap:4px;margin-bottom:26px}
 
 .divider{display:block;margin:44px auto 0;width:130px;height:auto}
@@ -209,7 +233,7 @@ p{margin:0 0 16px;color:var(--ink-soft)}
 }
 .rsvp .btn:hover{background:rgba(255,255,255,.1)}
 .rsvp .alt{margin:18px 0 0;font-size:.85rem}
-/* Den blagra markorfargen forsvinner mot det blagra feltet, sa her varm den opp. */
+/* Sort markorfarge forsvinner mot det rosa feltet, sa her lysnes den. */
 .rsvp .pending{color:var(--band-accent)}
 
 /* faq */
@@ -220,8 +244,11 @@ details summary::after{content:"+";float:right;color:var(--accent-soft);font-siz
 details[open] summary::after{content:"\2013"}
 details p{margin:12px 0 2px}
 
-footer{padding:44px 0 58px;text-align:center;color:var(--ink-soft)}
-footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size:1.4rem;line-height:1.5;color:var(--accent)}
+footer{padding:44px 0 110px;text-align:center;color:var(--ink-soft)}
+footer .oss{margin:8px auto 0;width:min(240px,70vw)}
+footer .oss img{display:block;width:100%;height:auto;border:1px solid var(--line)}
+footer .oss figcaption{margin-top:3px;font-style:italic;font-size:.68rem;letter-spacing:.04em;color:var(--ink-soft)}
+footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size:1.4rem;line-height:1.5;color:var(--script-ink)}
 
 /* markerer det dere fortsatt må fylle inn */
 .pending{color:var(--pending);font-style:italic}
@@ -232,9 +259,140 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
   .tl li{gap:14px}
   .tl time{flex-basis:60px;font-size:.78rem}
 }
+
+/* ---------- konvolutt ---------- */
+/* Siden apner som en lukket konvolutt, bygget av lag fra ett foto
+   (bilder/konvolutt.jpg, klippet tett rundt konvolutten):
+     1. kortet, bak alt
+     2. kroppen: fotoet med seglet malt over (konvolutt-uten.jpg)
+     3. lommen: flatt papir fra fotoet (konvolutt-inn.jpg) som et
+        morkere bakstykke og to sideklaffer som motes i midten, klippet
+        til klaffens trekant, synlig forst nar klaffen er vippet opp
+     4. klaffen: fotoet klippet til klaffen pluss seglet foran, og
+        flatt papir som bakside
+   Trykk: klaffen vipper opp, kortet trekkes ut, og alt toner over
+   i selve siden. Klaffens form er malt opp i fotoet; endres bildet
+   ma --klaff justeres. */
+html:not(.apnet){overflow:hidden}
+.apnet .konvolutt{display:none}
+.konvolutt{
+  position:fixed;inset:0;z-index:100;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-start;gap:30px;padding:4vh 24px 24px;
+  background:#FFFFFF;transition:opacity .7s ease .8s;
+}
+.konvolutt.borte{opacity:0;pointer-events:none}
+.env{
+  /* Klaffen pluss en firkant som dekker seglet, skyggen under det og
+     omradet som er fylt inn i konvolutt-uten.jpg. */
+  --klaff:polygon(0 0,100% 0,62% 40%,62% 87%,38% 87%,38% 40%);
+  --trekant:polygon(0 0,100% 0,50% 58%);
+  --trekant-inn:polygon(0 100%,100% 100%,50% 42%);
+  /* Apningen i lommen: over sideklaffenes kanter, pluss alt over
+     konvolutten, sa kortet kan trekkes opp. */
+  --munn:polygon(0 -300%,100% -300%,100% 0,50% 36%,0 0);
+  /* Bredden er ogsa begrenset av hoyden. Konvolutten ligger overst med
+     akkurat sa mye luft over seg som kortet trenger nar det trekkes opp
+     (kortets topp ender 0.64 x hoyden = 0.39 x bredden over kanten). */
+  --bredde:min(600px,94vw,70vh);
+  position:relative;width:var(--bredde);aspect-ratio:1327/805;
+  margin-top:calc(var(--bredde) * .41);
+  border:0;padding:0;background:none;cursor:pointer;
+  perspective:1400px;font:inherit;color:inherit;
+}
+.env:focus-visible{outline:2px solid var(--accent-soft);outline-offset:8px}
+.env img{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.env-kropp{z-index:2}
+.env-lomme{z-index:3;clip-path:var(--trekant);filter:brightness(.8)}          /* bakstykket, i skygge */
+.env-side-v{z-index:3;clip-path:polygon(0 0,50% 36%,50% 58%)}
+.env-side-h{z-index:3;clip-path:polygon(100% 0,50% 36%,50% 58%)}
+.env-munn{position:absolute;inset:0;z-index:3;clip-path:var(--munn)}
+.env-klaff{
+  position:absolute;inset:0;z-index:4;transform-origin:50% 2%;
+  transform-style:preserve-3d;
+  transition:transform .8s cubic-bezier(.45,0,.2,1),z-index 0s .4s;
+}
+.env-klaff img{backface-visibility:hidden}
+.env-klaff-front{clip-path:var(--klaff)}
+.env-klaff-bak{clip-path:var(--trekant-inn);transform:rotateX(180deg)}
+/* Kortet: handlaget papir (tekstur fra konvoluttfotoet, tonet krem)
+   med revet kant fra en maske. Tre steg etter at klaffen er oppe:
+     1. trekkes rett opp av lommen, bak konvolutten
+     2. legges foran konvolutten og vokser mot leseren
+     3. hele skjermen toner over i siden */
+.env-munn .env-kort{
+  position:absolute;left:8%;right:8%;top:12%;bottom:12%;z-index:1;
+  aspect-ratio:1000/620;
+  background:url(bilder/kort.jpg) center/cover;
+  -webkit-mask:url(bilder/kort-maske.png) center/100% 100% no-repeat;
+  mask:url(bilder/kort-maske.png) center/100% 100% no-repeat;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;
+  transform-origin:50% 50%;
+}
+.env-kort small{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);margin-bottom:2px}
+.env-kort b{font-family:var(--script);font-weight:500;font-size:clamp(1.4rem,6vw,2.1rem);line-height:1.5;white-space:nowrap;color:var(--script-ink)}
+.env-kort i{font-family:var(--numeral);font-style:normal;font-size:1.25rem;letter-spacing:.24em;color:var(--ink)}
+.env-kort i em{font-family:var(--serif);font-style:normal;font-weight:300;color:var(--rule);margin:0 .05em}
+.env-kort u{text-decoration:none;font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--ink);margin-top:4px}
+/* Skyggen kortet kaster nar det ligger foran konvolutten */
+.env-kort::after{content:"";position:absolute;inset:0;box-shadow:inset 0 0 0 1px rgba(150,120,60,.18);pointer-events:none}
+.env-skygge{
+  position:absolute;left:8%;right:8%;top:12%;bottom:12%;z-index:0;border-radius:6px;
+  box-shadow:0 30px 50px rgba(60,30,30,.28);opacity:0;
+  transition:opacity .4s 1.45s,z-index 0s 1.45s;
+}
+.env-hint{margin:0;font-size:.8rem;letter-spacing:.24em;text-transform:uppercase;color:var(--ink);transition:opacity .3s}
+.env.apen .env-klaff{transform:rotateX(180deg);z-index:0}
+.env.apen~.env-hint{opacity:0}
+.env.apen .env-kort{animation:kort-ut 2s cubic-bezier(.4,0,.2,1) .55s forwards;z-index:5}
+.env.apen .env-munn{animation:munn 2s .55s forwards}
+@keyframes munn{
+  0%,54%{clip-path:var(--munn);z-index:3}
+  55%,100%{clip-path:none;z-index:5}
+}
+.env.apen .env-skygge{animation:kort-ut 2s cubic-bezier(.4,0,.2,1) .55s forwards;opacity:1;z-index:4}
+@keyframes kort-ut{
+  0%  {transform:translateY(0) scale(1)}
+  45% {transform:translateY(-100%) scale(1)}
+  60% {transform:translateY(-100%) scale(1)}
+  100%{transform:translateY(-10%) scale(1.28)}
+}
+/* Konvolutten trekker seg litt bakover nar kortet kommer frem */
+/* Filter og opacity ma ligge pa bildene, ikke pa .env-klaff: pa 3D-laget
+   ville de flate ut rotasjonen og vise forsiden (med segl) gjennom baksiden. */
+.env-kropp,.env-lomme,.env-side-v,.env-side-h,.env-klaff img{transition:filter .6s 1.6s,opacity .6s 1.6s}
+.env.apen .env-kropp,.env.apen .env-side-v,.env.apen .env-side-h,.env.apen .env-klaff img{filter:blur(2px);opacity:.55}
+.env.apen .env-lomme{filter:brightness(.8) blur(2px);opacity:.55}
+@media (prefers-reduced-motion:reduce){
+  .konvolutt,.env-klaff,.env-kort,.env-hint,.env-kropp,.env-lomme{transition:none;animation:none}
+  .env-munn{clip-path:none;z-index:5}
+}
 </style>
+<script>
+/* Konvolutten vises bare forste gang i okten, og ikke nar noen kommer
+   rett til et avsnitt via lenke (#kleskode o.l.). Klassen settes for
+   siden tegnes, sa den ikke blinker forbi. */
+(function(){try{if(sessionStorage.getItem("apnet")||location.hash){document.documentElement.classList.add("apnet")}}catch(e){}})();
+</script>
 </head>
 <body>
+
+<div class="konvolutt" id="konvolutt">
+  <button class="env" type="button" aria-label="Åpne invitasjonen">
+    <img class="env-kropp" src="bilder/konvolutt-uten.jpg" alt="" width="1327" height="805">
+    <img class="env-lomme" src="bilder/konvolutt-inn.jpg" alt="" width="1327" height="805">
+    <span class="env-munn">
+    <span class="env-skygge"></span>
+    <span class="env-kort"><small>Vi gifter oss</small><b>Kristoffer og Synne</b><i>17<em>|</em>07<em>|</em>2027</i><u>Bled Castle · Slovenia</u></span>
+    </span>
+    <img class="env-side-v" src="bilder/konvolutt-inn.jpg" alt="" width="1327" height="805">
+    <img class="env-side-h" src="bilder/konvolutt-inn.jpg" alt="" width="1327" height="805">
+    <span class="env-klaff">
+      <img class="env-klaff-front" src="bilder/konvolutt.jpg" alt="" width="1327" height="805">
+      <img class="env-klaff-bak" src="bilder/konvolutt-inn.jpg" alt="" width="1327" height="805">
+    </span>
+  </button>
+  <p class="env-hint">Trykk for å åpne</p>
+</div>
 
 <header class="hero">
   <figure class="panorama">
@@ -247,9 +405,9 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
 
   <div class="wrap">
     <p class="eyebrow">Vi gifter oss!</p>
-    <h1 class="names">Kristoffer &amp; Synne</h1>
+    <h1 class="names">Kristoffer og Synne</h1>
     <p class="hero-date">17<i>|</i>07<i>|</i>2027</p>
-    <p class="hero-meta">Kl. 14.00<b>Bled Castle</b><b>Slovenia</b></p>
+    <p class="hero-meta"><b>Bled Castle</b><b>Slovenia</b></p>
     <ul class="count">
       <li><span class="n" data-days>&ndash;</span><span class="l">dager</span></li>
       <li><span class="n" data-hours>&ndash;</span><span class="l">timer</span></li>
@@ -274,9 +432,10 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
 <main class="wrap">
 
   <section id="velkommen">
-    <h2>Velkommen</h2>
+    <h2>Velkommen til bryllup</h2>
     <p class="sub">ved det magiske Bled Castle i Slovenia</p>
-    <p>Vi gifter oss på 10-årsdagen vår, lørdag 17. juli 2027, i slottsparken på Bled Castle. Det betyr mye for oss at dere tar turen. Her ligger alt det praktiske, og siden oppdateres fram mot bryllupet, så ta gjerne en titt igjen når det nærmer seg.</p>
+    <p class="intro">Vi gifter oss på 10-årsdagen vår, lørdag 17. juli 2027, i slottsparken på Bled Castle. Vi håper dere vil feire denne store dagen med oss. På denne siden finner dere informasjon om alt det praktiske, og den vil oppdateres fram mot bryllupet, så ta gjerne en titt igjen når det nærmer seg. Bare å spørre oss om det skulle være noe.</p>
+    <figure class="illu"><img src="bilder/bledcastle.jpg" alt="Bled Castle på klippen over Bledsjøen, med øya og kirken i sjøen og snødekte alper bak" loading="lazy" onerror="this.parentNode.remove()"></figure>
     <svg class="divider" viewBox="0 0 140 22" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
       <path d="M2 11h44M94 11h44" stroke="var(--line)" stroke-width="1"/>
       <path class="leaf-a" d="M70 2c7 4 10 9 10 9s-3 5-10 9c-7-4-10-9-10-9s3-5 10-9Z"/>
@@ -286,14 +445,14 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
 
   <section id="program">
     <h2>Program</h2>
-    <p class="sub">Fredag og lørdag</p>
+    <figure class="illu"><img src="bilder/program.jpg" alt="" loading="lazy" onerror="this.parentNode.remove()"></figure>
 
     <div class="program-block">
       <p class="day">Fredag 16. juli</p>
       <ul class="tl">
         <li>
           <time>19.00</time>
-          <div><b>Bli-kjent-kveld</b><span>Hotel Astoria Bled. Vi serverer lett fingermat, drikke kjøpes i baren. Helt uformelt, kom som du er.</span></div>
+          <div><b>Icebreaker</b><span>Vi inviterer til en icebreaker ved Hotel Astoria slik at dere kan bli litt bedre kjent før selve dagen. Vi serverer lett fingermat og drikke kan kjøpes i baren.</span></div>
         </li>
       </ul>
     </div>
@@ -303,7 +462,7 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
       <ul class="tl">
         <li>
           <time>13.30</time>
-          <div><b>Ankomst</b><span>Møt opp i Bled Castle Park senest 30 minutter før seremonien.</span></div>
+          <div><b>Ankomst</b><span>Møt opp i Bled Castle Park senest 30 minutter før seremonien. Vi undersøker muligheten for en felles buss fra hotellet til Bled Castle, bussen vil da gå kl. 13.30.</span></div>
         </li>
         <li>
           <time>14.00</time>
@@ -311,15 +470,19 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
         </li>
         <li>
           <time>15.00</time>
-          <div><b>Bobler og bilder</b><span>Champagne og alkoholfritt, en lett aperitiff, og litt tid til bilder og utsikt.</span></div>
+          <div><b>Photoshoot og sightseeing av slottet</b><span>Etter seremonien vil vi ha litt tid til å ta bilder med fotograf i parken, og dere får tid til å se dere rundt i slottet før vi samles på øverste terrasse. Anbefaler å ta en tur for å se vinkjelleren.</span></div>
         </li>
         <li>
           <time>17.00</time>
-          <div><b>Middag</b><span>Fri bar med vann, brus, øl og vin. Noen utvalgte drinker kan kjøpes.</span></div>
+          <div><b>Bryllupsmiddag</b><span>På øverste terrasse. Det serveres velkomstbobler etterfulgt av en 4 retters middag og dessertbord.</span></div>
         </li>
         <li>
-          <time class="pending">??</time>
-          <div><b>Fest og avslutning</b><span class="pending">Fyll inn når kvelden avsluttes, og om det er felles transport tilbake til hotellet.</span></div>
+          <time>20.00</time>
+          <div><b>Fest, dans og leker</b><span>Vi fortsetter feiringen på dansegulvet.</span></div>
+        </li>
+        <li>
+          <time>01.00</time>
+          <div><b>Avslutning</b><span>Bussen tilbake til hotellet går kl. 01.15.</span></div>
         </li>
       </ul>
     </div>
@@ -331,29 +494,34 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
     <div class="stack">
       <div class="card">
         <h3>Fly</h3>
-        <p>Nærmeste flyplass er Ljubljana lufthavn (LJU), ca. 30 minutter fra Bled. Det går også an å fly til Venezia, Trieste, Klagenfurt eller Zagreb, men da må dere regne med to til tre timer videre.</p>
-      </div>
-      <div class="card">
-        <h3>Fra flyplassen</h3>
-        <p>Taxi tar ca. 30 minutter. Det finnes også delte flyplasstransfers som bør bestilles på forhånd.</p>
-        <p class="pending">Fyll inn: navn på transferselskap og omtrentlig pris, eventuelt om dere ordner noe felles.</p>
+        <p>Nærmeste flyplass er Ljubljana lufthavn (LJU). Det går ikke direktefly fra Norge, så regn med én mellomlanding og en reisetid på ca. <span class="pending">5–7 timer</span> totalt.</p>
+        <p>Fra flyplassen er det ca. 30 minutter med taxi til Bled.</p>
       </div>
       <div class="card">
         <h3>Papirer</h3>
         <p>Slovenia er i EU og Schengen. Norske statsborgere trenger gyldig pass eller nasjonalt ID-kort. Sjekk at passet ikke går ut i løpet av 2027.</p>
       </div>
     </div>
+    <figure class="illu illu-after"><img src="bilder/reise.jpg" alt="Koffert, norsk pass og boardingkort i en flyplasslounge, med fly og fjell utenfor vinduet" loading="lazy" onerror="this.parentNode.remove()"></figure>
   </section>
 
   <section id="kart">
     <h2>Hvor</h2>
-    <p class="sub">Begge stedene på ett kart, med gangveien mellom</p>
+    <p class="sub">Begge stedene på ett kart</p>
     <div class="map">
-      <iframe src="https://www.google.com/maps/embed?pb=!1m6!4m5!3e2!4m1!2sHotel+Astoria+Bled,+Bled,+Slovenia!4m1!2sBled+Castle,+Bled,+Slovenia!3m1!1sno!5m1!1sno"
-              title="Kart over Hotel Astoria Bled og Bled Castle"
-              loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <div id="kart-flate" aria-label="Kart over Hotel Astoria Bled og Bled Castle"></div>
+      <noscript><p>Kartet trenger JavaScript. Bruk lenkene under for å åpne stedene i Google Maps.</p></noscript>
     </div>
     <div class="stack">
+      <div class="card place">
+        <h3>Overnatting og icebreaker</h3>
+        <b class="place-name">Hotel Astoria Bled</b>
+        <p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Prešernova cesta 44, 4260 Bled, Slovenia</span></p>
+        <p class="links">
+          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Se på kart</a>
+          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Veibeskrivelse</a>
+        </p>
+      </div>
       <div class="card place">
         <h3>Vielse og fest</h3>
         <b class="place-name">Bled Castle</b>
@@ -363,36 +531,27 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
           <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Bled+Castle,+Grajska+cesta+61,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Veibeskrivelse</a>
         </p>
       </div>
-      <div class="card place">
-        <h3>Overnatting og bli-kjent-kveld</h3>
-        <b class="place-name">Hotel Astoria Bled</b>
-        <p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Prešernova cesta 44, 4260 Bled, Slovenia</span></p>
-        <p class="links">
-          <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Se på kart</a>
-          <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Veibeskrivelse</a>
-        </p>
-      </div>
     </div>
   </section>
 
   <section id="overnatting">
     <h2>Overnatting</h2>
-    <p class="sub">Vi har ordnet rabatt</p>
     <div class="stack">
       <div class="card place">
         <div class="place-head">
           <b class="place-name">Hotel Astoria Bled</b>
           <span class="pill">Rabattert pris for gjestene</span>
         </div>
-        <p>Vi har ordnet rabatt her, og det er ca. 15 minutters spasertur til Bled Castle. Bli-kjent-kvelden er også på hotellet.</p>
+        <p>Vi har ordnet rabatt her, og det er ca. 15 minutters spasertur til Bled Castle. Icebreakeren er også på hotellet.</p>
         <p>Lenken under er forhåndsutfylt med 16.–18. juli for to personer. Datoer og antall kan endres i bookingen.</p>
         <p class="addr"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-5.4-6-11a6 6 0 0 1 12 0c0 5.6-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg><span>Prešernova cesta 44, 4260 Bled, Slovenia</span></p>
         <p class="links">
           <a class="btn-accent" href="https://booking.profitroom.com/en/hotelastoriabled1/pricelist/offers/1086720/?check-in=2027-07-16&amp;check-out=2027-07-18&amp;currency=EUR&amp;r1_adults=2&amp;no-cache=1" target="_blank" rel="noopener">Book med rabatt</a>
           <a href="https://www.google.com/maps/search/?api=1&amp;query=Hotel+Astoria+Bled,+Pre%C5%A1ernova+cesta+44,+4260+Bled,+Slovenia" target="_blank" rel="noopener">Se på kart</a>
         </p>
-        <p class="pending">Fyll inn: siste frist for å få rabatten.</p>
+        <p>Siste frist for å få rabatten er 31.03.2027.</p>
       </div>
+      <figure class="illu illu-mid"><img src="bilder/overnatting.jpg" alt="Hotell ved Bledsjøen med terrasse og blomsterkasser, slottet på klippen bak" loading="lazy" onerror="this.parentNode.remove()"></figure>
       <div class="card">
         <h3>Andre alternativer</h3>
         <p>Bled har mange hoteller, leiligheter og pensjonater i alle prisklasser. Juli er høysesong, så book tidlig.</p>
@@ -400,36 +559,33 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
     </div>
   </section>
 
-  <section id="kleskode">
-    <h2>Kleskode</h2>
-    <p class="sub">Sommerlig pent</p>
-    <div class="card">
-      <p>Sommerlig pent, gjerne i lyse farger. Mørk dress går også helt fint.</p>
-      <p>Det er brostein og litt bakke opp til slottet, så ta med sko dere går godt i. Juli i Bled er varmt, ofte mellom 25 og 30 grader, men kveldene kan bli kjølige nede ved innsjøen. Ta med et sjal eller en lett jakke.</p>
-    </div>
+  <section id="kleskode" aria-label="Kleskode">
+    <!-- Overskrift og undertekst ligger i selve bildet. -->
+    <figure class="illu"><img src="bilder/kleskode.jpg" alt="Kleskode: sommerlig pent. Kle dere gjerne sommerlig og pent, men viktigst av alt – kom i noe dere trives i. Både lyse dresser og mørk blå eller sort dress er helt fint. Greit å vite: det er brostein og litt bakke opp til slottet, så velg sko dere går godt i. Juli i Bled er varmt, ofte 25–30 grader, men kveldene ved innsjøen kan bli kjølige – ta gjerne med et sjal eller en lett jakke. For damer: kjole, skjørt eller pent antrekk. For herrer: dress eller pent antrekk." loading="lazy" onerror="this.parentNode.remove()"></figure>
   </section>
 
   <section id="mat">
     <h2>Mat og drikke</h2>
-    <p class="sub">Si fra om allergier</p>
     <div class="card">
-      <p>Etter seremonien serverer vi champagne, alkoholfritt og en lett aperitiff. Middagen starter ca. kl. 17.00, og det er fri bar med vann, brus, øl og vin gjennom kvelden.</p>
-      <p>Har dere allergier eller intoleranser, gi beskjed når dere svarer på invitasjonen, senest <span class="pending">[frist]</span>.</p>
+      <p>Til middag serveres det en fire retters meny med kald forrett, suppe, varm forrett og hovedrett. Senere på kvelden blir det satt opp et dessertbord som dere kan forsyne dere fritt fra.</p>
+      <p>Det blir fri bar med vann, brus, kaffe, øl og vin gjennom kvelden. Det vil også være en drinkbar hvor dere kan kjøpe drinker selv. Drinkene vil være Aperol Spritz, Hugo Spritz og Espresso Martini.</p>
+      <p>Har dere allergier, intoleranser eller andre hensyn, gi oss beskjed når dere svarer på invitasjonen.</p>
+    </div>
+    <div class="illu-pair">
+      <figure class="illu illu-after"><img src="bilder/drinker.jpg" alt="Aperol Spritz, Hugo Spritz og Espresso Martini på en bar" loading="lazy" onerror="this.parentNode.remove()"></figure>
+      <figure class="illu illu-after"><img src="bilder/dessertbord.jpg" alt="Dessertbord med kaker og søtsaker" loading="lazy" onerror="this.parentNode.remove()"></figure>
     </div>
   </section>
 
-  <section id="gaver">
-    <h2>Gaver</h2>
-    <p class="sub">Det viktigste er at dere kommer</p>
-    <div class="card">
-      <p>Etter 10 år sammen har vi det vi trenger, så vi ønsker oss helst bidrag til bryllupsreisen.</p>
-      <p>Ønsker dere å gi noe fysisk, setter vi stor pris på å få det i Norge, siden det blir vanskelig å få med gaver hjem fra Slovenia.</p>
-    </div>
+  <section id="gaver" aria-label="Gaver">
+    <!-- Overskrift og tekst ligger i selve bildet. -->
+    <figure class="illu"><img src="bilder/gaver.jpg" alt="Gaver. Det viktigste for oss er at dere kommer. Etter 10 år sammen har vi det vi trenger, så vi ønsker oss helst bidrag til bryllupsreisen. Ønsker dere å gi noe fysisk, setter vi stor pris på å få det i Norge, siden det blir vanskelig å få med gaver hjem fra Slovenia." loading="lazy" onerror="this.parentNode.remove()"></figure>
   </section>
 
   <section id="bled">
     <h2>Mens dere er her</h2>
     <p class="sub">Bled er verdt noen ekstra dager</p>
+    <figure class="illu"><img src="bilder/bled.jpg" alt="" loading="lazy" onerror="this.parentNode.remove()"></figure>
     <div class="card">
       <p>Rundt Bledsjøen går det en tur på seks kilometer, og ute på øya i midten ligger kirken man ror til. Vintgar-juvet er en kort kjøretur unna, Triglav nasjonalpark starter rett utenfor byen, og Ljubljana er omtrent en time med bil. Mange gjester velger å legge på noen dager.</p>
     </div>
@@ -440,27 +596,32 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
     <p class="sub">Er det noe mer, bare spør oss</p>
     <details>
       <summary>Kan jeg ta med barn?</summary>
-      <p class="pending">Fyll inn svar.</p>
+      <p>Vi ønsker at bryllupet vårt skal være en voksenfeiring, og inviterer derfor i utgangspunktet gjester fra 18 år og oppover. Hør med oss dersom dere er usikre.</p>
+      <p>Spedbarn er selvfølgelig hjertelig velkomne. Vi ønsker ikke at nybakte foreldre skal måtte takke nei fordi det ikke er mulig å være borte fra den minste. Dersom dere har behov for å ha med en barnevakt eller to, er vedkommende hjertelig velkommen til middag.</p>
+      <p>Gi oss gjerne beskjed på forhånd dersom spedbarn eller barnevakt skal ha plass ved bordet, så sørger vi for at det blir ordnet.</p>
     </details>
     <details>
       <summary>Kan jeg ta med følge?</summary>
-      <p class="pending">Fyll inn svar. Det enkleste er å si at invitasjonen gjelder de som står navngitt på den.</p>
+      <p>Ja, det synes vi er veldig hyggelig! Vi setter bare pris på å få møte vedkommende før bryllupet, dersom det er mulig.</p>
     </details>
     <details>
       <summary>Når bør jeg booke fly?</summary>
-      <p>Så tidlig som mulig. Juli er høysesong i Bled, og prisene stiger raskt utover våren.</p>
+      <p>Prisene varierer en del, og det er foreløpig ikke så mange avganger tilgjengelig så langt frem i tid. Vi ville derfor kanskje ventet til rett over nyttår før dere bestiller.</p>
+      <p>Vi følger med på prisene og rutene fremover, og gir gjerne beskjed dersom vi ser gode priser eller aktuelle avganger.</p>
     </details>
     <details>
       <summary>Hvor lenge bør jeg bli?</summary>
-      <p>Vi anbefaler å komme senest fredag ettermiddag, så rekker dere bli-kjent-kvelden. Reiser dere hjem søndag, får dere med hele helgen.</p>
+      <p>Vi anbefaler å komme senest fredag ettermiddag dersom dere ønsker å bli med på icebreaker fredag kveld. Reiser dere hjem søndag, får dere med dere hele bryllupshelgen.</p>
+      <p>Har dere mulighet til å bli litt lenger, vil vi absolutt anbefale det. Slovenia er en litt ukjent perle, med mye å oppleve på relativt korte avstander, og passer perfekt for noen ekstra feriedager før eller etter bryllupet.</p>
     </details>
     <details>
       <summary>Skjer det noe på søndag?</summary>
-      <p class="pending">Fyll inn om dere gjør noe uformelt dagen derpå.</p>
+      <p>Vi har foreløpig ingen faste planer på søndag. Dagen er derfor fri til en rolig morgen med frokost, litt sightseeing eller hjemreise. Alt etter hva som passer best for dere.</p>
+      <p>For dem som blir igjen i Bled, håper vi selvfølgelig å få sagt ordentlig hadet før dere reiser videre.</p>
     </details>
     <details>
       <summary>Hvordan kommer jeg meg til seremonien?</summary>
-      <p class="pending">Fyll inn om det er felles transport fra hotellet, eller om folk går eller tar taxi selv.</p>
+      <p>Vi undersøker muligheten for en felles buss. Det er kun 15 min å gå, men det er grusvei og bratt.</p>
     </details>
   </section>
 
@@ -468,17 +629,64 @@ footer .sign{margin:10px 0 0;font-family:var(--script);font-weight:500;font-size
 
 <section class="rsvp" id="svar">
   <h2>Svar</h2>
-  <p class="sub">Innen <span class="pending">[dato]</span></p>
-  <p>Gi oss beskjed om dere kommer, og si samtidig fra om allergier eller intoleranser.</p>
-  <p><a class="btn" href="mailto:din@epost.no?subject=Svar%20p%C3%A5%20bryllupsinvitasjonen">Send oss en e-post</a></p>
-  <p class="alt">Dere kan også svare på arrangementssiden på Facebook.</p>
+  <p class="sub">Innen 31. mars 2027</p>
+  <p>Send oss en melding eller e-post, og si samtidig fra om allergier eller intoleranser.</p>
+  <p>I mars vil vi begynne å spørre rundt for endelig svar.</p>
+  <p><a class="btn" href="mailto:synne_enstrom@hotmail.com?subject=Svar%20p%C3%A5%20bryllupsinvitasjonen">Send oss en e-post</a></p>
 </section>
 
 <footer class="wrap">
   <p>Vi gleder oss masse!</p>
+  <figure class="oss">
+    <img src="bilder/kogs.jpg" alt="Kristoffer og Synne, tett inntil hverandre og smilende, foran en opplyst steintrapp" width="677" height="899" loading="lazy" onerror="this.parentNode.remove()">
+    <figcaption>Bled Castle, 17. juli 2024</figcaption>
+  </figure>
   <p class="sign">Kristoffer og Synne</p>
 </footer>
 
+<script>
+(function(){
+  var skjerm = document.getElementById("konvolutt");
+  var env = skjerm && skjerm.querySelector(".env");
+  if(!env){ return; }
+  var rask = matchMedia("(prefers-reduced-motion:reduce)").matches;
+  env.addEventListener("click", function(){
+    if(env.classList.contains("apen")){ return; }
+    env.classList.add("apen");
+    try{ sessionStorage.setItem("apnet","1"); }catch(e){}
+    setTimeout(function(){ skjerm.classList.add("borte"); }, rask ? 0 : 2200);
+    setTimeout(function(){ document.documentElement.classList.add("apnet"); }, rask ? 0 : 3800);
+  });
+})();
+</script>
+<script>
+/* Kartet under "Hvor": Leaflet med OpenStreetMap som kartgrunnlag, og to
+   egne naler. Google sin gratis innbygging kan ikke vise to markorer
+   uten rute, derfor Leaflet. Rullehjul zoomer ikke, sa siden ikke
+   stopper opp nar man scroller forbi. */
+(function(){
+  var el = document.getElementById("kart-flate");
+  if(!el){ return; }
+  function start(){
+    if(typeof L === "undefined"){ return; }
+    var steder = [
+      {navn:"Bled Castle", pos:[46.36970, 14.10052], side:"venstre"},
+      {navn:"Hotel Astoria Bled", pos:[46.37194, 14.10735]}
+    ];
+    var kart = L.map(el, {scrollWheelZoom:false, attributionControl:true});
+    L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom:19,
+      attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(kart);
+    var nal = '<svg viewBox="0 0 28 36" aria-hidden="true"><path d="M14 1C7 1 2 6 2 13c0 9 12 22 12 22s12-13 12-22C26 6 21 1 14 1z" fill="#B8696E"/><circle cx="14" cy="13" r="4.5" fill="#fff"/></svg>';
+    steder.forEach(function(st){
+      L.marker(st.pos, {icon:L.divIcon({className:"nal " + (st.side || ""), html:nal+"<b>"+st.navn+"</b>", iconSize:[0,0], iconAnchor:[0,0]}), keyboard:false}).addTo(kart);
+    });
+    kart.fitBounds(steder.map(function(st){ return st.pos; }), {padding:[40,90]});
+  }
+  if(document.readyState === "complete"){ start(); } else { window.addEventListener("load", start); }
+})();
+</script>
 <script>
 (function(){
   var target = new Date("2027-07-17T14:00:00+02:00").getTime();

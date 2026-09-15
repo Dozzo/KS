@@ -19,9 +19,15 @@ Alt innhold ligger i `index.html`. Rediger den, ikke `artifact.html`.
 
 ## Bilder
 
-Legg store bilder gjennom skriptet før de committes, ellers vokser repoet fort:
+Legg store bilder gjennom skriptet før de committes, ellers vokser repoet fort.
+Skriptet trenger Pillow (`pip install pillow`):
 
-    python3 klargjor_bilde.py ~/Desktop/bilde.jpg navn
+    python klargjor_bilde.py ~/Desktop/bilde.jpg navn
+
+Illustrasjonene ligger i `<figure class="illu">` i hvert avsnitt og fjerner
+seg selv (`onerror`) hvis filen mangler, så avsnittet vises uten bilde.
+Plasser for bilder som ennå ikke finnes: `bilder/program.jpg`, `gaver.jpg`
+og `bled.jpg`.
 
 Panoramaet i toppen er 2048 px bredt og 184 kB. Utsnittet på mobil styres av
 `object-position` på `.panorama img`, satt til 58 % for å holde både

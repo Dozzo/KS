@@ -23,19 +23,29 @@ for pattern in (
 
 # Artifact-sida er en enkelt fil uten sidefiler, sa bildene ma legges inn
 # direkte. index.html beholder de vanlige stiene til bilder/.
-def bygg_inn(treff: re.Match) -> str:
-    sti = pathlib.Path(treff.group(1))
+def data_uri(sti: pathlib.Path) -> str | None:
     if not sti.is_file():
         print(f"  advarsel: fant ikke {sti}, hopper over")
-        return treff.group(0)
+        return None
     type_, _ = mimetypes.guess_type(sti)
     data = base64.b64encode(sti.read_bytes()).decode("ascii")
     print(f"  bygget inn {sti} ({len(data) / 1024:,.0f} kB base64)")
-    return f'src="data:{type_};base64,{data}"'
+    return f"data:{type_};base64,{data}"
 
 
-src = re.sub(r'src="(bilder/[^"]+)"', bygg_inn, src)
+def bygg_inn_src(treff: re.Match) -> str:
+    uri = data_uri(pathlib.Path(treff.group(1)))
+    return f'src="{uri}"' if uri else treff.group(0)
+
+
+def bygg_inn_url(treff: re.Match) -> str:
+    uri = data_uri(pathlib.Path(treff.group(1)))
+    return f"url({uri})" if uri else treff.group(0)
+
+
+src = re.sub(r'src="(bilder/[^"]+)"', bygg_inn_src, src)
+src = re.sub(r"url\((bilder/[^)]+)\)", bygg_inn_url, src)   # bakgrunner og masker i CSS
 
 src = re.sub(r"\n{3,}", "\n\n", src).strip() + "\n"
-pathlib.Path("artifact.html").write_text(src, encoding="utf-8")
+pathlib.Path("artifact.html").write_text(src, encoding="utf-8", newline="\n")
 print(f"artifact.html: {len(src)} tegn")
